@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: site.name, template: `%s — ${site.name}` },
-  description: `${site.role}. ${site.location}.`,
+  description: `${site.role} at ${site.company.name}. ${site.location}.`,
   alternates: {
     types: { "application/rss+xml": `${site.url}/rss.xml` },
   },
