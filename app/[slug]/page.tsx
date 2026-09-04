@@ -67,9 +67,12 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
         <div className="mt-2 text-md text-muted text-pretty">{post.dek}</div>
 
         <div className="mt-5 flex flex-wrap items-baseline gap-x-2 text-sm text-muted">
-          <a href="#about" className="text-ink hover:opacity-60">
+          <Link
+            href="/about"
+            className="text-ink transition-opacity duration-140 ease-out hover:opacity-60"
+          >
             {"Daine Mawer"}
-          </a>
+          </Link>
           <span className="text-divider">|</span>
           <span>
             {published.day} {published.month}{" "}

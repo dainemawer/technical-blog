@@ -3,7 +3,8 @@ import { Breadcrumb } from "@/components/breadcrumb";
 import { Logo } from "@/components/logo";
 import { PageShell } from "@/components/page-shell";
 import { Toc } from "@/components/toc";
-import { usesSections } from "@/lib/uses";
+import { formatArticleDate } from "@/lib/format";
+import { usesReviewedOn, usesSections } from "@/lib/uses";
 
 export const metadata: Metadata = {
   title: "Uses",
@@ -11,6 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default function UsesPage() {
+  const reviewed = formatArticleDate(usesReviewedOn);
+
   return (
     <PageShell
       sidebar={
@@ -36,7 +39,9 @@ export default function UsesPage() {
           The hardware and software I actually open every day, and why.
         </div>
         <div className="mt-5 flex items-baseline gap-x-2 text-sm text-muted">
-          <span>Reviewed 09 02 2026</span>
+          <span>
+            Reviewed {reviewed.day} {reviewed.month} {reviewed.year}
+          </span>
           <span className="text-divider">|</span>
           <span>No affiliate links</span>
         </div>

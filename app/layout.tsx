@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Figtree, JetBrains_Mono } from "next/font/google";
 import { CommandPaletteProvider } from "@/components/command-palette-context";
 import { CommandPaletteMount } from "@/components/command-palette-mount";
@@ -24,6 +24,10 @@ export const metadata: Metadata = {
   alternates: {
     types: { "application/rss+xml": `${site.url}/rss.xml` },
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
