@@ -16,7 +16,10 @@ export function Breadcrumb({ items }: { items: Crumb[] }) {
         <Fragment key={item.label}>
           {index > 0 && <span className="px-1.5">/</span>}
           {item.href ? (
-            <Link href={item.href} className="text-faint hover:text-ink">
+            <Link
+              href={item.href}
+              className="text-faint hover:text-ink focus-visible:text-ink"
+            >
               {item.label}
             </Link>
           ) : (

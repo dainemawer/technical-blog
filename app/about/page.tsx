@@ -97,7 +97,10 @@ export default function AboutPage() {
               {about.writesAbout.map((topic, index) => (
                 <span key={topic.href} className="flex items-baseline gap-x-2">
                   {index > 0 && <span className="text-divider">|</span>}
-                  <Link href={topic.href} className="hover:text-ink">
+                  <Link
+                    href={topic.href}
+                    className="hover:text-ink focus-visible:text-ink"
+                  >
                     {topic.label}
                   </Link>
                 </span>
@@ -110,7 +113,10 @@ export default function AboutPage() {
               {about.verify.map((link, index) => (
                 <span key={link.href} className="flex items-baseline gap-x-2">
                   {index > 0 && <span className="text-divider">|</span>}
-                  <a href={link.href} className="hover:text-ink">
+                  <a
+                    href={link.href}
+                    className="hover:text-ink focus-visible:text-ink"
+                  >
                     {link.label}
                   </a>
                 </span>

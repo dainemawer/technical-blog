@@ -69,7 +69,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
         <div className="mt-5 flex flex-wrap items-baseline gap-x-2 text-sm text-muted">
           <Link
             href="/about"
-            className="text-ink transition-opacity duration-140 ease-out hover:opacity-60"
+            className="text-ink transition-opacity duration-140 ease-out hover:opacity-60 focus-visible:opacity-60"
           >
             {"Daine Mawer"}
           </Link>
@@ -130,7 +130,10 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
           {content.related && (
             <aside className="my-6.5 grid grid-cols-meta items-baseline gap-x-12 text-muted text-sm">
               <div className="text-right text-faint">Related</div>
-              <Link href={content.related.href} className="hover:text-ink">
+              <Link
+                href={content.related.href}
+                className="hover:text-ink focus-visible:text-ink"
+              >
                 {content.related.label}
               </Link>
             </aside>
@@ -164,14 +167,17 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
 
         <div className="mt-19 grid grid-cols-2 gap-x-12 text-sm text-muted">
           {content.prev && (
-            <Link href={content.prev.href} className="hover:text-ink">
+            <Link
+              href={content.prev.href}
+              className="hover:text-ink focus-visible:text-ink"
+            >
               {content.prev.label}
             </Link>
           )}
           {content.next && (
             <Link
               href={content.next.href}
-              className="text-right hover:text-ink"
+              className="text-right hover:text-ink focus-visible:text-ink"
             >
               {content.next.label}
             </Link>
