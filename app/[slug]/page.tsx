@@ -39,7 +39,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
   return (
     <PageShell
       sidebar={
-        <div className="flex flex-col gap-23.5">
+        <div className="flex h-full flex-col gap-23.5">
           <Logo />
           <Toc
             heading="On this page"
@@ -111,7 +111,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
               {section.heading && (
                 <h2
                   id={section.id}
-                  className="mt-8 text-ink text-lg tracking-tight"
+                  className="mt-8 scroll-mt-10 text-ink text-lg tracking-tight"
                 >
                   {section.heading}
                 </h2>
@@ -140,7 +140,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
           )}
         </div>
 
-        <div id="takeaways" className="mt-18">
+        <div id="takeaways" className="mt-18 scroll-mt-10">
           <MetaRow label="Takeaways">
             <ol className="flex list-decimal flex-col gap-3 pl-5.5 text-base text-ink leading-normal text-pretty">
               {content.takeaways.map((takeaway) => (
@@ -150,7 +150,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
           </MetaRow>
         </div>
 
-        <div id="faq" className="mt-18">
+        <div id="faq" className="mt-18 scroll-mt-10">
           <MetaRow label="Questions">
             <div className="flex flex-col gap-7">
               {content.faq.map((item) => (
