@@ -29,6 +29,26 @@ Do not bypass hooks (`--no-verify`) unless explicitly instructed to.
 
 `.github/workflows/lint.yml` runs Biome lint checks on every push and pull request against `main`.
 
+## Skills
+
+Skills installed via [skills.sh](https://www.skills.sh) live in `.agents/skills/<name>/` (with `.claude/skills/<name>` symlinks), pinned in `skills-lock.json`. Claude Code auto-discovers and triggers these from their `SKILL.md` description — no action needed there. Agents without that mechanism should read the relevant `.agents/skills/<name>/SKILL.md` (or `AGENTS.md`, a flattened version of the same content) directly, using the table below to pick the right one.
+
+| Skill | Use when |
+| --- | --- |
+| `vercel-react-best-practices` | Writing, reviewing, or refactoring React/Next.js code for performance (data fetching, bundle size, rendering). |
+| `vercel-composition-patterns` | Designing component APIs — compound components, avoiding boolean prop proliferation, reusable patterns. |
+| `vercel-react-view-transitions` | Adding page/route transitions or animating UI state with React's View Transition API. |
+| `web-design-guidelines` | Reviewing UI code for interface/UX/accessibility guideline compliance. |
+| `accessibility` | Auditing or improving WCAG 2.2 accessibility compliance. |
+| `web-perf` | Profiling page load performance and Core Web Vitals via Chrome DevTools MCP. |
+| `vercel-optimize` | Investigating Vercel cost or performance issues on a deployed project (requires `vercel` CLI + Observability Plus). |
+| `deploy-to-vercel` | Deploying the app or creating a preview link on request. |
+| `seo-audit` | Diagnosing technical or on-page SEO issues (rankings, indexing, meta tags, Core Web Vitals). |
+| `schema` | Adding or fixing schema.org / JSON-LD structured data for rich results. |
+| `ai-seo` | Optimizing content to be cited/surfaced by AI search engines (AI Overviews, ChatGPT, Perplexity). |
+| `writing-guidelines` | Reviewing blog post prose, voice, and tone against the writing handbook. |
+| `best-practices` | General security, compatibility, and code quality review. |
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
