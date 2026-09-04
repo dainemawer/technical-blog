@@ -40,8 +40,8 @@ export default async function TopicPage(props: PageProps<"/topics/[topic]">) {
               <Link
                 key={t.slug}
                 href={`/topics/${t.slug}`}
-                className="text-ink text-sm hover:opacity-100"
-                style={{ opacity: t.slug === topic.slug ? 1 : 0.32 }}
+                aria-current={t.slug === topic.slug ? "page" : undefined}
+                className={`text-ink text-sm hover:opacity-100 focus-visible:opacity-100 ${t.slug === topic.slug ? "opacity-100" : "opacity-32"}`}
               >
                 {t.name}
               </Link>

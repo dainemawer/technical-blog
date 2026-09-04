@@ -15,7 +15,9 @@ export function PageShell({
         <div className="flex flex-col">{sidebar}</div>
         <div className="flex flex-col">
           <UtilityBar />
-          <div className="mt-17.5">{children}</div>
+          <main id="content" className="mt-17.5">
+            {children}
+          </main>
           <FooterElsewhere />
         </div>
       </div>

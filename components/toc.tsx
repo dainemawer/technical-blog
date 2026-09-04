@@ -51,8 +51,8 @@ export function Toc({
         <a
           key={item.id}
           href={`#${item.id}`}
-          className="text-ink text-sm text-pretty transition-opacity duration-140 ease-out hover:opacity-100"
-          style={{ opacity: active === item.id ? 1 : 0.32 }}
+          aria-current={active === item.id ? "location" : undefined}
+          className={`text-ink text-sm text-pretty transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100 ${active === item.id ? "opacity-100" : "opacity-32"}`}
         >
           {item.label}
         </a>

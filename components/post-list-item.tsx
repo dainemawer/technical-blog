@@ -6,7 +6,7 @@ export function PostListItem({ post }: { post: Post }) {
   return (
     <Link
       href={`/${post.slug}`}
-      className="grid grid-cols-meta items-baseline gap-x-12 opacity-42 transition-opacity duration-140 ease-out hover:opacity-100"
+      className="grid grid-cols-meta items-baseline gap-x-12 opacity-42 transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100"
     >
       <div className="text-right text-sm text-muted">
         {formatPostDate(post.date)}

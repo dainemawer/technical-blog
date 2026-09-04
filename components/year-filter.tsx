@@ -6,24 +6,24 @@ export function YearFilter({ selected }: { selected?: number }) {
   const latest = years[0];
 
   return (
-    <div className="flex flex-col items-start gap-6.5">
+    <nav aria-label="Years" className="flex flex-col items-start gap-6.5">
       {years.map((year) => {
         const isActive = selected ? selected === year : year === latest;
         return (
           <Link
             key={year}
             href={selected === year ? "/" : `/?year=${year}`}
-            className="cursor-pointer font-medium text-ink text-sm transition-opacity duration-140 ease-out hover:opacity-100"
+            aria-current={isActive ? "page" : undefined}
+            className={`cursor-pointer font-medium text-ink text-sm transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100 ${isActive ? "opacity-100" : "opacity-28"}`}
             style={{
               writingMode: "vertical-rl",
               transform: "rotate(180deg)",
-              opacity: isActive ? 1 : 0.28,
             }}
           >
             {year}
           </Link>
         );
       })}
-    </div>
+    </nav>
   );
 }
