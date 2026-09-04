@@ -64,9 +64,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/*
+ * Scoped to Tailwind's `base` layer (not left unlayered) so that
+ * `hover:`/`focus-visible:` color utilities — which live in the
+ * `utilities` layer — can actually override it. An unlayered rule
+ * always wins over a layered one regardless of specificity, which
+ * silently defeated every color-based hover/focus state on every
+ * link in the site until this was scoped.
+ */
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 ::selection {
