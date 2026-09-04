@@ -9,6 +9,8 @@ import { PageShell } from "@/components/page-shell";
 import { Toc } from "@/components/toc";
 import { articleContent } from "@/lib/article-content";
 import { formatArticleDate } from "@/lib/format";
+import { highlightCode } from "@/lib/highlight";
+import { renderInlineText } from "@/lib/inline-markdown";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
 import { getTopicBySlug } from "@/lib/topics";
 
@@ -35,6 +37,12 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
   const published = formatArticleDate(post.date);
   const updated = post.updated ? formatArticleDate(post.updated) : undefined;
   const topic = post.topics[0] ? getTopicBySlug(post.topics[0]) : undefined;
+  const highlightedCode = content.code
+    ? await highlightCode(
+        content.code.source,
+        content.code.lang ?? "javascript",
+      )
+    : undefined;
 
   return (
     <PageShell
@@ -118,11 +126,11 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
               )}
               {section.paragraphs.map((paragraph) => (
                 <p key={paragraph.slice(0, 40)} className="text-pretty">
-                  {paragraph}
+                  {renderInlineText(paragraph)}
                 </p>
               ))}
               {section.id === "challenge" && content.code && (
-                <CodeBlock code={content.code.source} />
+                <CodeBlock code={content.code.source} html={highlightedCode} />
               )}
             </div>
           ))}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export function CodeBlock({ code }: { code: string }) {
+export function CodeBlock({ code, html }: { code: string; html?: string }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -26,12 +26,21 @@ export function CodeBlock({ code }: { code: string }) {
       >
         {copied ? "Copied" : "Copy"}
       </button>
-      <pre
-        translate="no"
-        className="overflow-x-auto whitespace-pre font-mono text-muted text-sm leading-loose"
-      >
-        {code}
-      </pre>
+      {html ? (
+        <div
+          translate="no"
+          className="overflow-x-auto font-mono text-sm leading-loose [&_pre]:!bg-transparent"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: shiki-generated markup, not user input
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      ) : (
+        <pre
+          translate="no"
+          className="overflow-x-auto whitespace-pre font-mono text-muted text-sm leading-loose"
+        >
+          {code}
+        </pre>
+      )}
     </div>
   );
 }

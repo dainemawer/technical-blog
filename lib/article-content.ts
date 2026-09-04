@@ -7,7 +7,7 @@ export type ArticleSection = {
 export type ArticleContent = {
   shortAnswer: string;
   sections: ArticleSection[];
-  code?: { label: string; source: string };
+  code?: { label: string; source: string; lang?: string };
   toc: { id: string; label: string }[];
   takeaways: string[];
   faq: { question: string; answer: string }[];
@@ -27,7 +27,7 @@ export const articleContent: Record<string, ArticleContent> = {
     sections: [
       {
         paragraphs: [
-          'Using position: sticky is a handy CSS positioning property that allows elements to stick to the top of a relative parent on scroll. It\'s a considerable step forward compared to the older methods of scrolling down the page, past a specific offset and dynamically "fixing" the element to the browser window using position: fixed.',
+          'Using [position: sticky](https://developer.mozilla.org/en-US/docs/Web/CSS/position#sticky) is a handy CSS positioning property that allows elements to stick to the top of a relative parent on scroll. It\'s a considerable step forward compared to the older methods of scrolling down the page, past a specific offset and dynamically "fixing" the element to the browser window using position: fixed.',
         ],
       },
       {
@@ -56,6 +56,7 @@ export const articleContent: Record<string, ArticleContent> = {
     ],
     code: {
       label: "Copy",
+      lang: "javascript",
       source: `let stickyElementStyle = null;
 let stickyElementTop = 0;
 
