@@ -20,7 +20,7 @@ export function Breadcrumb({ items }: { items: Crumb[] }) {
               {item.label}
             </Link>
           ) : (
-            <span>{item.label}</span>
+            <span aria-current="page">{item.label}</span>
           )}
         </Fragment>
       ))}

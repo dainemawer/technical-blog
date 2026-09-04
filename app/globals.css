@@ -19,8 +19,8 @@
 
   /* Colors */
   --color-ink: #111111;
-  --color-muted: #9a9a9a;
-  --color-faint: #c4c4c4;
+  --color-muted: #6b6b6b; /* ~5.3:1 on white — WCAG AA for normal text */
+  --color-faint: #767676; /* ~4.5:1 on white — WCAG AA minimum for normal text */
   --color-divider: #cfcfcf;
   --color-surface: #ffffff;
   --color-overlay: rgb(10 32 26 / 32%); /* command palette backdrop */
@@ -72,4 +72,15 @@ a {
 ::selection {
   background: var(--color-ink);
   color: var(--color-surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

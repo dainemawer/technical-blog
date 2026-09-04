@@ -22,18 +22,22 @@ export default function AboutPage() {
             <div className="mb-1 text-faint text-xs">
               Elsewhere on this page
             </div>
-            <Link href="/about" className="text-ink text-sm">
+            <Link
+              href="/about"
+              aria-current="page"
+              className="text-ink text-sm"
+            >
               About
             </Link>
             <Link
               href="/uses"
-              className="text-ink text-sm opacity-32 hover:opacity-100"
+              className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
             >
               Uses
             </Link>
             <Link
               href="/now"
-              className="text-ink text-sm opacity-32 hover:opacity-100"
+              className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
             >
               Now
             </Link>

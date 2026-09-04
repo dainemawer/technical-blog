@@ -76,7 +76,17 @@ export function CommandPalette() {
         <div className="flex items-baseline gap-3">
           <input
             ref={inputRef}
+            role="combobox"
             aria-label="Search writing"
+            aria-expanded="true"
+            aria-haspopup="listbox"
+            aria-controls="command-palette-listbox"
+            aria-autocomplete="list"
+            aria-activedescendant={
+              results[cursor]
+                ? `command-palette-option-${results[cursor].slug}`
+                : undefined
+            }
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);
@@ -105,10 +115,18 @@ export function CommandPalette() {
           <span className="font-mono text-2xs text-faint">esc</span>
         </div>
 
-        <div className="mt-5 flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto overscroll-contain">
+        <div
+          id="command-palette-listbox"
+          role="listbox"
+          aria-label="Search results"
+          className="mt-5 flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto overscroll-contain"
+        >
           {results.map((post, index) => (
             <Link
               key={post.slug}
+              id={`command-palette-option-${post.slug}`}
+              role="option"
+              aria-selected={index === cursor}
               href={`/${post.slug}`}
               onClick={close}
               onMouseEnter={() => setCursor(index)}
@@ -138,7 +156,7 @@ export function CommandPalette() {
           <span className="text-divider">|</span>
           <span>↵ to open</span>
           <span className="text-divider">|</span>
-          <span>
+          <span aria-live="polite">
             {results.length === 1 ? "1 result" : `${results.length} results`}
           </span>
         </div>
