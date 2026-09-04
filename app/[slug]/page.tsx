@@ -86,7 +86,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
           )}
           <span className="text-divider">|</span>
           <span>{post.readTime}</span>
-          {post.wordCount && (
+          {post.wordCount != null && (
             <>
               <span className="text-divider">|</span>
               <span>{post.wordCount.toLocaleString()} words</span>

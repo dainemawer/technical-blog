@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 export type Post = {
   slug: string;
   title: string;
@@ -84,19 +86,22 @@ export const posts: Post[] = [
   },
 ];
 
-export function getAllPosts(): Post[] {
-  return [...posts].sort((a, b) => (a.date < b.date ? 1 : -1));
-}
+// posts never changes at runtime, so sort once at module scope rather than
+// on every getAllPosts() call — it's called from Home, Now, Topics,
+// generateStaticParams, and the command palette.
+const sortedPosts = posts.toSorted((a, b) => (a.date < b.date ? 1 : -1));
 
-export function getPostBySlug(slug: string): Post | undefined {
-  return posts.find((post) => post.slug === slug);
-}
+export const getAllPosts = cache((): Post[] => sortedPosts);
+
+export const getPostBySlug = cache((slug: string): Post | undefined =>
+  posts.find((post) => post.slug === slug),
+);
 
 export function getPostsByTopic(topic: string): Post[] {
-  return getAllPosts().filter((post) => post.topics.includes(topic));
+  return sortedPosts.filter((post) => post.topics.includes(topic));
 }
 
 export function getYears(): number[] {
   const years = new Set(posts.map((post) => new Date(post.date).getFullYear()));
-  return [...years].sort((a, b) => b - a);
+  return Array.from(years).toSorted((a, b) => b - a);
 }
