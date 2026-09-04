@@ -1,14 +1,22 @@
+"use client";
+
 import { SearchTrigger } from "./search-trigger";
+import { useSetSubscribeModalOpen } from "./subscribe-modal-context";
 
 export function UtilityBar() {
+  const setSubscribeOpen = useSetSubscribeModalOpen();
+
   return (
     <div className="flex h-6 items-baseline justify-end gap-2 text-sm text-muted">
       <SearchTrigger />
       <span className="text-divider">|</span>
-      {/* TODO: point at a real subscribe flow once one exists; RSS is the interim mechanism */}
-      <a href="/rss.xml" className="hover:text-ink focus-visible:text-ink">
+      <button
+        type="button"
+        onClick={() => setSubscribeOpen(true)}
+        className="cursor-pointer hover:text-ink focus-visible:text-ink"
+      >
         Subscribe
-      </a>
+      </button>
       <span className="text-divider">|</span>
       <a href="/rss.xml" className="hover:text-ink focus-visible:text-ink">
         RSS
