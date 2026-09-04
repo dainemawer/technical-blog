@@ -21,11 +21,15 @@ export function CodeBlock({ code }: { code: string }) {
       <button
         type="button"
         onClick={copy}
+        aria-live="polite"
         className="absolute top-0 right-0 text-faint text-xs hover:text-ink"
       >
         {copied ? "Copied" : "Copy"}
       </button>
-      <pre className="overflow-x-auto whitespace-pre font-mono text-muted text-sm leading-loose">
+      <pre
+        translate="no"
+        className="overflow-x-auto whitespace-pre font-mono text-muted text-sm leading-loose"
+      >
         {code}
       </pre>
     </div>

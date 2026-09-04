@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { formatPostDate } from "@/lib/format";
 import { getAllPosts } from "@/lib/posts";
 import {
@@ -16,6 +17,7 @@ export function CommandPalette() {
   const [cursor, setCursor] = useState(0);
   const router = useRouter();
   const posts = useMemo(() => getAllPosts(), []);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -24,6 +26,21 @@ export function CommandPalette() {
       `${post.title} ${post.dek}`.toLowerCase().includes(q),
     );
   }, [posts, query]);
+
+  // Restore focus to whatever opened the palette (the ⌘K shortcut or the
+  // SearchTrigger button) once it closes, and only autofocus the input on
+  // devices with a precise pointer — a touch tap shouldn't force the
+  // on-screen keyboard open immediately.
+  useEffect(() => {
+    if (!open) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    if (window.matchMedia("(pointer: fine)").matches) {
+      inputRef.current?.focus();
+    }
+    return () => {
+      previouslyFocused?.focus?.();
+    };
+  }, [open]);
 
   if (!open) return null;
 
@@ -50,11 +67,16 @@ export function CommandPalette() {
       }}
       className="fixed inset-0 z-60 flex justify-center bg-overlay pt-palette-offset backdrop-blur-sm"
     >
-      <div className="flex max-h-palette w-155 flex-col overflow-hidden rounded-palette bg-surface p-6 pb-5 shadow-palette">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Search writing"
+        className="flex max-h-palette w-155 flex-col overflow-hidden rounded-palette bg-surface p-6 pb-5 shadow-palette"
+      >
         <div className="flex items-baseline gap-3">
           <input
-            // biome-ignore lint/a11y/noAutofocus: intentional for a keyboard-triggered command palette
-            autoFocus
+            ref={inputRef}
+            aria-label="Search writing"
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);
@@ -78,17 +100,17 @@ export function CommandPalette() {
               }
             }}
             placeholder="Search writing"
-            className="flex-1 border-none bg-transparent text-md text-ink outline-none placeholder:text-faint"
+            className="flex-1 rounded-md border-none bg-transparent text-md text-ink outline-none placeholder:text-faint focus-visible:ring-2 focus-visible:ring-ink/15"
           />
           <span className="font-mono text-2xs text-faint">esc</span>
         </div>
 
-        <div className="mt-5 flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto">
+        <div className="mt-5 flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto overscroll-contain">
           {results.map((post, index) => (
-            <button
-              type="button"
+            <Link
               key={post.slug}
-              onClick={() => select(post.slug)}
+              href={`/${post.slug}`}
+              onClick={close}
               onMouseEnter={() => setCursor(index)}
               className="grid grid-cols-result items-baseline gap-x-5 text-left"
               style={{ opacity: index === cursor ? 1 : 0.42 }}
@@ -102,11 +124,11 @@ export function CommandPalette() {
                 </div>
                 <div className="text-sm text-muted text-pretty">{post.dek}</div>
               </div>
-            </button>
+            </Link>
           ))}
           {results.length === 0 && (
             <div className="text-md text-faint">
-              Nothing here — try "sticky", "storybook", "estimation".
+              Nothing here — try “sticky”, “storybook”, “estimation”.
             </div>
           )}
         </div>

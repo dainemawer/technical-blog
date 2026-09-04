@@ -4,6 +4,8 @@ export type UsesSection = {
   items: { name: string; description: string }[];
 };
 
+export const usesReviewedOn = "2026-02-09";
+
 export const usesSections: UsesSection[] = [
   {
     id: "desk",
