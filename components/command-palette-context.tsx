@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, type ReactNode, use, useEffect, useState } from "react";
 
 // Split into two contexts so components that only dispatch (e.g.
 // SearchTrigger, which never reads whether the palette is open) don't
@@ -44,7 +38,7 @@ export function CommandPaletteProvider({ children }: { children: ReactNode }) {
 }
 
 export function useCommandPaletteOpen() {
-  const context = useContext(CommandPaletteStateContext);
+  const context = use(CommandPaletteStateContext);
   if (context === null) {
     throw new Error(
       "useCommandPaletteOpen must be used within a CommandPaletteProvider",
@@ -54,7 +48,7 @@ export function useCommandPaletteOpen() {
 }
 
 export function useSetCommandPaletteOpen() {
-  const context = useContext(CommandPaletteDispatchContext);
+  const context = use(CommandPaletteDispatchContext);
   if (context === null) {
     throw new Error(
       "useSetCommandPaletteOpen must be used within a CommandPaletteProvider",
