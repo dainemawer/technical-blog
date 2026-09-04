@@ -16,7 +16,7 @@ export function FooterElsewhere() {
                   <a
                     key={link.label}
                     href={link.href}
-                    className="hover:text-ink"
+                    className="hover:text-ink focus-visible:text-ink"
                   >
                     {link.label}
                   </a>

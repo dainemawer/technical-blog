@@ -22,7 +22,7 @@ export function CodeBlock({ code }: { code: string }) {
         type="button"
         onClick={copy}
         aria-live="polite"
-        className="absolute top-0 right-0 text-faint text-xs hover:text-ink"
+        className="absolute top-0 right-0 text-faint text-xs hover:text-ink focus-visible:text-ink"
       >
         {copied ? "Copied" : "Copy"}
       </button>
