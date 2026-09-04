@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Figtree, JetBrains_Mono } from "next/font/google";
+import { CommandPalette } from "@/components/command-palette";
+import { CommandPaletteProvider } from "@/components/command-palette-context";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -30,7 +32,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${figtree.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col font-sans">{children}</body>
+      <body className="flex min-h-full flex-col font-sans">
+        <CommandPaletteProvider>
+          {children}
+          <CommandPalette />
+        </CommandPaletteProvider>
+      </body>
     </html>
   );
 }
