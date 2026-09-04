@@ -4,10 +4,14 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { formatPostDate } from "@/lib/format";
 import { getAllPosts } from "@/lib/posts";
-import { useCommandPalette } from "./command-palette-context";
+import {
+  useCommandPaletteOpen,
+  useSetCommandPaletteOpen,
+} from "./command-palette-context";
 
 export function CommandPalette() {
-  const { open, setOpen } = useCommandPalette();
+  const open = useCommandPaletteOpen();
+  const setOpen = useSetCommandPaletteOpen();
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
   const router = useRouter();

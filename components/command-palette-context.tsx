@@ -8,14 +8,14 @@ import {
   useState,
 } from "react";
 
-type CommandPaletteContextValue = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-};
-
-const CommandPaletteContext = createContext<CommandPaletteContextValue | null>(
-  null,
-);
+// Split into two contexts so components that only dispatch (e.g.
+// SearchTrigger, which never reads whether the palette is open) don't
+// re-render every time it opens/closes — only components that read the
+// open state (CommandPalette itself) do.
+const CommandPaletteStateContext = createContext<boolean | null>(null);
+const CommandPaletteDispatchContext = createContext<
+  ((open: boolean) => void) | null
+>(null);
 
 export function CommandPaletteProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -35,17 +35,29 @@ export function CommandPaletteProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <CommandPaletteContext value={{ open, setOpen }}>
-      {children}
-    </CommandPaletteContext>
+    <CommandPaletteDispatchContext value={setOpen}>
+      <CommandPaletteStateContext value={open}>
+        {children}
+      </CommandPaletteStateContext>
+    </CommandPaletteDispatchContext>
   );
 }
 
-export function useCommandPalette() {
-  const context = useContext(CommandPaletteContext);
-  if (!context) {
+export function useCommandPaletteOpen() {
+  const context = useContext(CommandPaletteStateContext);
+  if (context === null) {
     throw new Error(
-      "useCommandPalette must be used within a CommandPaletteProvider",
+      "useCommandPaletteOpen must be used within a CommandPaletteProvider",
+    );
+  }
+  return context;
+}
+
+export function useSetCommandPaletteOpen() {
+  const context = useContext(CommandPaletteDispatchContext);
+  if (context === null) {
+    throw new Error(
+      "useSetCommandPaletteOpen must be used within a CommandPaletteProvider",
     );
   }
   return context;

@@ -1,9 +1,9 @@
 "use client";
 
-import { useCommandPalette } from "./command-palette-context";
+import { useSetCommandPaletteOpen } from "./command-palette-context";
 
 export function SearchTrigger() {
-  const { setOpen } = useCommandPalette();
+  const setOpen = useSetCommandPaletteOpen();
 
   return (
     <button
