@@ -13,6 +13,7 @@ export function PostListItem({
     <article>
       <Link
         href={`/${post.slug}`}
+        transitionTypes={["nav-forward"]}
         className="grid grid-cols-meta items-baseline gap-x-12 opacity-42 transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100"
       >
         <time dateTime={post.date} className="text-right text-sm text-muted">

@@ -19,6 +19,7 @@ export function Breadcrumb({ items }: { items: Crumb[] }) {
             {item.href ? (
               <Link
                 href={item.href}
+                transitionTypes={["nav-back"]}
                 className="text-faint hover:text-ink focus-visible:text-ink"
               >
                 {item.label}
