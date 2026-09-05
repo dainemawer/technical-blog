@@ -17,7 +17,7 @@ export default function UsesPage() {
   return (
     <PageShell
       sidebar={
-        <div className="flex flex-col gap-23.5">
+        <div className="flex h-full flex-col gap-23.5">
           <Logo />
           <Toc
             heading="On this page"
@@ -54,7 +54,7 @@ export default function UsesPage() {
             >
               <h2
                 id={section.id}
-                className="text-right font-normal text-faint text-sm"
+                className="scroll-mt-10 text-right font-normal text-faint text-sm"
               >
                 {section.label}
               </h2>

@@ -60,6 +60,10 @@
   --shadow-palette: 0 30px 70px rgb(0 40 30 / 28%);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
 }
