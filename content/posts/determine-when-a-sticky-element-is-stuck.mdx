@@ -1,0 +1,69 @@
+---
+title: How to Determine When a Sticky Element is Stuck in JavaScript
+dek: A small JavaScript function for the pseudo-class CSS never gave us.
+date: '2024-03-14'
+updated: '2026-02-09'
+topics:
+  - javascript
+shortAnswer: CSS still has no way to ask whether a sticky element is currently stuck. I solve it with a small JavaScript function instead. Cache the element's computed `top` value once, then compare it against `getBoundingClientRect().top` on a throttled scroll listener and toggle a class when they match. IntersectionObserver is the faster option, but only works if the sticky element is the very first thing on the page.
+takeaways:
+  - CSS has no way to query whether a sticky element is stuck, so I built this instead.
+  - "Cache `getComputedStyle` and the parsed `top` value once. Recomputing them on every scroll event is expensive for no reason."
+  - Throttling the scroll listener to 200ms doesn't hurt the experience and saves a lot of main-thread work.
+  - IntersectionObserver is more performant, but only works cleanly when the sticky element is the first thing on the page.
+  - "`classList.toggle()` takes a second `force` argument that turns it into a one-way operation. Most engineers don't know it exists."
+faq:
+  - question: Why doesn't CSS have a `:stuck` pseudo-class?
+    answer: The `position:sticky` spec only describes behavior, not a state you can query. There's no native selector for whether an element is currently stuck, so you have to track it yourself in JavaScript.
+  - question: Can I use IntersectionObserver to detect a stuck element instead?
+    answer: Yes, but only if the sticky element is the first thing on the page. It needs a -1px top offset to fire at the right moment. If the element sits further down the page, behind another sticky header for example, that hack falls apart and the scroll-based approach below works better.
+  - question: Does listening to the scroll event hurt performance?
+    answer: Not if you throttle it. Scroll fires constantly, but capping execution to once every 200ms keeps the main thread free without any lag the user would notice.
+needsRewrite: false
+---
+
+Using `position: sticky` is a handy CSS positioning property that sticks an element to the top of its relative parent on scroll. It's a solid step up from the older approach: tracking a scroll offset and manually switching an element to `position: fixed`.
+
+## Why CSS can't detect a stuck element
+
+CSS still won't tell you whether a sticky element is currently stuck. That's annoying, because sticky headers often need a different look once they've stuck: a shadow, a smaller logo, a background colour. A `:stuck` pseudo-class would fix this outright. The spec just doesn't define one.
+
+So I use a small JavaScript function that watches the element's position and toggles a class once it's stuck:
+
+```javascript
+let stickyElementStyle = null;
+let stickyElementTop = 0;
+
+function determineStickyState(element) {
+  if (!stickyElementStyle) {
+    stickyElementStyle = window.getComputedStyle(element);
+    stickyElementTop = parseInt(stickyElementStyle.top, 10);
+  }
+
+  const currentTop = element.getBoundingClientRect().top;
+
+  element.classList.toggle('is-sticky', currentTop <= stickyElementTop);
+}
+
+window.addEventListener('scroll', throttle(determineStickyState, 200));
+```
+
+## How the function works
+
+`determineStickyState` takes the sticky element and gets bound to the window's scroll event through a throttle helper, capped to once every 200ms. Scroll fires a lot more often than that. Without throttling, this function would fire on every single delta. That's wasted work: the user never notices the difference either way.
+
+The last line does the actual job: it toggles a class called `is-sticky` if `currentTop` is less than or equal to `stickyTop`. Most engineers don't know that `classList.toggle()` takes a second `force` argument. Passing true or false turns it into a one-way operation instead of a toggle, which is exactly the behaviour this pattern needs. Per MDN:
+
+> If included, it turns the toggle into a one-way-only operation. If set to false, the token will only be removed but not added. If set to true, the token will only be added but not removed.
+
+The two unscoped variables, `stickyElementStyle` and `stickyElementTop`, exist to cache the expensive part. `window.getComputedStyle` is costly to call on every scroll event, so it only runs once, the first time the function fires. After that, the cached `top` value (run through `parseInt`) gets reused.
+
+`getBoundingClientRect().top` and `getComputedStyle().top` are easy to mix up. The first returns the element's current rendered position. The second returns the CSS-defined top value it's sticking to. Once the current position reaches that defined value, the element is stuck.
+
+## Why IntersectionObserver doesn't work here
+
+IntersectionObserver would be the more performant choice. It skips a scroll listener entirely. The catch: detecting a sticky element with it needs a hack, setting the element's `top` to `-1px` so the observer fires at the right threshold. That only holds up when the sticky element is the very first thing on the page.
+
+Mine wasn't. The sticky element sat further down, behind an already-sticky site header, so its effective top needed to be a positive number that accounted for that header's height. IntersectionObserver can't express that. The scroll-and-throttle approach above works no matter where the element sits.
+
+The full code is up as a [Gist](https://gist.github.com/dainemawer/e233dc5b3ea82caa3a984cf34c6b339f).

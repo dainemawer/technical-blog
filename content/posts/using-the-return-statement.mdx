@@ -1,0 +1,123 @@
+---
+title: 4 Tips for Properly Using the Return Statement in JavaScript
+dek: A few rules that keep return statements from causing quiet bugs.
+date: '2023-02-13'
+topics:
+  - javascript
+shortAnswer: Four rules make return statements more reliable. End a function explicitly rather than relying on an implicit undefined, return the type your caller actually expects, return the value your function's name promises rather than whatever's in scope, and use multiple return statements for early exits instead of nesting conditionals.
+takeaways:
+  - A bare `return;` on its own line ends a function immediately and returns `undefined`. That's often accidental, not intentional.
+  - "JavaScript's automatic semicolon insertion breaks a `return` followed by a value on the next line. Keep the value on the same line as `return`, or open a parenthesis on the `return` line."
+  - Returning the wrong data type, a string where a number is expected, is a common source of bugs that only show up later, once type coercion has already papered over it.
+  - A function should return what its name promises. `average()` should return an average, not the running sum used to calculate it.
+  - Multiple return statements for early exits, in a switch or an if block, are fine, and often more readable than one variable reassigned throughout.
+faq:
+  - question: Why does my return statement return undefined on the next line?
+    answer: "JavaScript's automatic semicolon insertion (ASI) treats return on its own line as a complete statement, so anything after the line break gets ignored. Keep the return value on the same line as return, or open a parenthesis on the return line and close it after the value."
+  - question: Is it bad practice to use multiple return statements in one function?
+    answer: No. Returning early from a switch case or an if block is often clearer than nesting conditionals or tracking a variable through the whole function.
+  - question: What's a common mistake with return statement types?
+    answer: Returning a different data type than the caller expects, like a template string instead of a number. JavaScript's type coercion often lets that slide silently until it breaks something else entirely.
+needsRewrite: false
+---
+
+The return statement doesn't get much attention, but it's easy to get subtly wrong. It specifies the value a function hands back to its caller and marks the end of that function's execution. Get it wrong and your code can still run without erroring, just not the way you expect. Here are four things worth knowing.
+
+## 1. Use return to end a function or method
+
+Return signals the end of a function. The moment it's hit, the function stops:
+
+```javascript
+function sayMyName(name) {
+  console.log(name);
+  return; // ends the function, returns undefined
+}
+```
+
+Worth knowing: return is affected by automatic semicolon insertion (ASI). You can't put the value on the next line and expect it to come along:
+
+```javascript
+// Wrong. ASI inserts a semicolon after return, so this returns
+// undefined and never touches `name`.
+return
+  name;
+
+// Right. The parenthesis stays open across the line break, so
+// ASI doesn't insert anything.
+return (
+  name
+);
+```
+
+## 2. Return the correct data type
+
+Return the type your caller actually expects. Get this wrong and your program will still run, just not correctly, thanks to JavaScript's [type coercion](https://developer.mozilla.org/en-US/docs/Glossary/Type_coercion) quietly patching over the mismatch until it eventually causes a real bug somewhere downstream.
+
+```javascript
+function add(a, b) {
+  return a + b; // correct, returns a number
+}
+
+function subtract(a, b) {
+  return a - b; // correct, returns a number
+}
+
+function multiply(a, b) {
+  return `${a} times ${b} is equal to: ${a * b}`; // wrong, returns a string
+}
+```
+
+## 3. Return a value that's appropriate for the function
+
+Think about what your function's name actually promises, and return that, not just whatever happens to be in scope. If a function is meant to calculate an average, returning the sum isn't correct, even though the sum is right there.
+
+```javascript
+function average(numbers) {
+  let total = 0;
+  for (let number of numbers) {
+    total += number;
+  }
+
+  return total; // wrong, this is the sum, not the average
+}
+
+function average(numbers) {
+  let total = 0;
+  for (let number of numbers) {
+    total += number;
+  }
+
+  return total / numbers.length; // correct
+}
+```
+
+## 4. Use multiple return statements if it helps
+
+Sometimes you want to return immediately once a condition is met, whether that's inside an if statement or a switch.
+
+```javascript
+function options(option) {
+  switch (option) {
+    case "DnD":
+      return "do-not-disturb";
+    case "Silent":
+      return "silent-mode";
+    default:
+      return "no-option-selected";
+  }
+}
+
+function getOptions(option) {
+  if (option === "DnD") {
+    return "do-not-disturb";
+  }
+
+  return option;
+}
+```
+
+In `options`, returning directly inside each case means no `break` keyword and no temporary variable to hold the value. It reads better and uses less memory.
+
+In `getOptions`, you always get a value back regardless of which branch runs: the return inside the `if` fires when the condition is true, and otherwise the function falls through to the final `return option`.
+
+None of this is complicated, but getting it wrong tends to produce bugs that only show up later, once something downstream trips over a value that isn't what it expected. [Read more about the return statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return) on MDN.

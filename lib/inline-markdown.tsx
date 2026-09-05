@@ -1,29 +1,43 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-const LINK_PATTERN = /\[([^\]]+)\]\(([^)]+)\)/g;
+// Combined so both forms are recognised in document order in one pass —
+// matching them with two separate regexes would require re-splicing the
+// text and lose the relative ordering between a link and a code span.
+const INLINE_PATTERN = /\[([^\]]+)\]\(([^)]+)\)|`([^`]+)`/g;
 
 /**
- * Renders the small `[label](url)` link syntax article content is allowed
- * to use inside otherwise-plain paragraph strings — not a full Markdown
- * parser, just enough to embed a hyperlink in prose.
+ * Renders the small subset of Markdown article content is allowed to use
+ * inside otherwise-plain-text fields (shortAnswer, takeaways, faq) — not a
+ * full Markdown parser, just `[label](url)` links and `` `code` `` spans.
+ * The article body itself is real MDX; this is only for the frontmatter
+ * fields that render as plain strings.
  */
 export function renderInlineText(text: string): ReactNode[] {
   const nodes: ReactNode[] = [];
   let lastIndex = 0;
   let key = 0;
 
-  LINK_PATTERN.lastIndex = 0;
+  INLINE_PATTERN.lastIndex = 0;
   for (
-    let match = LINK_PATTERN.exec(text);
+    let match = INLINE_PATTERN.exec(text);
     match !== null;
-    match = LINK_PATTERN.exec(text)
+    match = INLINE_PATTERN.exec(text)
   ) {
-    const [full, label, href] = match;
+    const [full, label, href, code] = match;
     if (match.index > lastIndex) {
       nodes.push(text.slice(lastIndex, match.index));
     }
-    if (href.startsWith("/")) {
+    if (code !== undefined) {
+      nodes.push(
+        <code
+          key={key++}
+          className="rounded bg-ink/5 px-1 py-0.5 font-mono text-ink text-sm"
+        >
+          {code}
+        </code>,
+      );
+    } else if (href.startsWith("/")) {
       nodes.push(
         <Link
           key={key++}

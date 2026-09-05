@@ -1,0 +1,51 @@
+---
+title: Mastering Task Estimation with the FATE Framework
+dek: 'Accurate timelines, and a happy client.'
+date: '2024-03-12'
+topics:
+  - engineering-management
+shortAnswer: FATE breaks task estimation into four categories, in reverse acronym order. Engineering (the actual coding time), Technical (code review), Admin (task boards, meetings, overhead), and Feedback (QA and client review rounds). Estimating each separately, instead of lumping everything into "coding time," is what actually produces a timeline that holds up.
+takeaways:
+  - Most estimates only account for engineering time and skip code review, admin overhead, and QA/feedback rounds entirely. That's usually where a timeline quietly falls apart.
+  - Segment engineering work into small chunks with a realistic timeframe each, rather than one big estimate for the whole feature.
+  - Admin time, task boards, standups, documentation, is real time. Budgeting for it up front is cheaper than discovering it later as slippage.
+  - Building feedback rounds into the estimate, and setting expectations with the client early, keeps scope creep from feeling like a broken promise.
+faq:
+  - question: What does FATE stand for in task estimation?
+    answer: Feedback, Admin, Technical, Engineering. Working through them in reverse order, Engineering, Technical, Admin, Feedback, is more chronological, since that's roughly the order the work actually happens in.
+  - question: Why estimate admin time separately from engineering time?
+    answer: Because it's easy to forget and it adds up. Task board updates, documentation, and meetings all take real time away from coding. If they're not budgeted for, the engineering estimate quietly absorbs them and runs over.
+  - question: How do client feedback rounds fit into an estimate?
+    answer: Build in dedicated time between each round of client feedback to make changes, and set clear communication expectations up front. An estimate should flex when feedback changes scope, rather than silently absorbing the extra work.
+needsRewrite: false
+---
+
+Task estimation is something every frontend engineer and engineering manager has to get reasonably good at. Most estimates only cover the coding, though, and that's usually why they end up wrong. I put together a small framework, FATE, that covers the parts people tend to forget: **F**eedback, **A**dmin, **T**echnical, **E**ngineering.
+
+The letters aren't in a particular order. It reads better reversed, since Engineering, Technical, Admin, Feedback roughly matches the order the work actually happens in.
+
+#### Engineering
+
+Coding time should account for the complexity of the work, how familiar the team is with the stack, and the dependencies and difficulties likely to show up along the way.
+
+Break the work into small, manageable chunks and put a realistic timeframe on each one rather than estimating the feature as a whole. Factor in the experience and risk profile of whoever's actually doing the work, not just the work itself.
+
+#### Technical
+
+Code review is where quality gets checked, bugs get caught early, and knowledge actually spreads across the team. It deserves real time in the estimate, not whatever's left over. That includes time for the author to act on feedback and iterate, not just time for a reviewer to read the diff. Senior engineers reviewing junior work should factor this in especially.
+
+#### Admin
+
+This part sounds tedious, but it's real time: updating task boards, documenting progress, attending meetings, the general overhead of running a project. Estimate for it explicitly. Good tooling and workflows cut the admin tax down, which frees up more of the estimate for actual development.
+
+#### Feedback
+
+Plan when testing happens, across devices, browsers, and real user scenarios, and lean on automation for the repetitive parts so there's still time for manual testing where it matters. Cover functional, usability, performance, and security, not just "does it work."
+
+Build in rounds of client feedback, with time between each round to act on it. Set up clear communication with the client so feedback comes back on schedule, and be willing to adjust the estimate when feedback changes the scope. Involving the client in the estimation process itself tends to produce estimates that actually match what they expect.
+
+## Why this is worth the extra structure
+
+Skipping any of the four usually shows up the same way: a coding-only estimate that looked fine on paper runs over once code review, admin overhead, and feedback rounds all turn out to need time nobody budgeted for. That's what erodes client trust, not the code itself.
+
+Estimating all four separately takes a bit more upfront thought, but it's the difference between a timeline you can actually defend and one you're hoping holds up.

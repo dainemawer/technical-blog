@@ -4,19 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { formatPostDate } from "@/lib/format";
-import { getAllPosts } from "@/lib/posts";
+import type { Post } from "@/lib/posts";
 import {
   useCommandPaletteOpen,
   useSetCommandPaletteOpen,
 } from "./command-palette-context";
 
-export function CommandPalette() {
+export function CommandPalette({ posts }: { posts: Post[] }) {
   const open = useCommandPaletteOpen();
   const setOpen = useSetCommandPaletteOpen();
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
   const router = useRouter();
-  const posts = useMemo(() => getAllPosts(), []);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const results = useMemo(() => {

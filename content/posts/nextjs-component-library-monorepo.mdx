@@ -1,0 +1,234 @@
+---
+title: Setting Up Next.js with a Component Library Using Monorepos
+dek: A component library, Storybook, and Next.js, all in one workspace.
+date: '2023-11-20'
+topics:
+  - javascript
+shortAnswer: NPM workspaces (v7+) let a component library and a Next.js site live and develop together in one monorepo, so the library can be built with Storybook and imported into Next.js like any third-party package. The one wrinkle is that Next.js won't transpile ES6 from outside its own folder by default, so you need transpileModules in next.config.js pointing at your workspace name.
+takeaways:
+  - NPM workspaces (v7+) replace git submodules and manually linked local packages for a monorepo setup. One node_modules, one package-lock.json, managed from the root.
+  - Storybook doesn't need to be a dependency of any individual workspace. Install it once at the monorepo root and point its stories config at the component library package.
+  - "Next.js doesn't transpile code from outside its own project folder by default. Add the workspace name to transpileModules in next.config.js, then restart the dev server."
+  - "npm run build --workspaces --if-present runs a build script across every workspace that has one, and skips the ones that don't. Handy once more than one production site shares the same library."
+faq:
+  - question: Why won't Next.js import my component library from another workspace?
+    answer: Next.js doesn't transpile ES6 JavaScript from node_modules or any folder outside its own reach by default. Add the workspace's name, not its file path, to transpileModules in next.config.js, then restart the dev server.
+  - question: Do I need Storybook installed separately in each workspace?
+    answer: No. Since Storybook isn't a dependency of any individual package or project, install it once at the monorepo root and point its stories config at wherever the component library actually lives.
+  - question: What's the advantage of NPM workspaces over git submodules for a monorepo?
+    answer: One node_modules and one package-lock.json managed from the root, instead of initializing a repo within a repo or manually linking and updating local packages from elsewhere on disk.
+needsRewrite: false
+---
+
+A monorepo is a single repository holding multiple related packages or projects. With NPM workspaces, you can build a component library that several applications consume, all version-controlled together in one place.
+
+I've worked with monorepos in production for over a year now, and I'll say this much: they beat git submodules. A typical monorepo holds several closely related packages, and it gets you away from initializing a repo within a repo, or manually linking local packages from elsewhere on disk and keeping them updated by hand.
+
+NPM has supported workspaces (v7 and above) for a while now, which gets you most of the way to a proper monorepo structure.
+
+I recently built a component suite for a Next.js project. The goal: develop components actively with Storybook, and have my Next.js projects consume them directly, the same way I'd import any third-party library. Next.js has always supported a `components` folder, but it's scoped to the app itself. A monorepo lets you treat your component library as its own real package instead.
+
+## Set up the project structure
+
+Start with a folder for the monorepo:
+
+```bash
+mkdir my-monorepo && cd my-monorepo
+```
+
+Bootstrap a package.json:
+
+```bash
+npm init -y
+```
+
+That gives you something like:
+
+```json
+{
+  "name": "my-monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+Before installing dependencies, add a `workspaces` key so NPM knows where your projects and packages actually live. NPM has a built-in command for this, run the following and follow each prompt:
+
+```bash
+npm init -w ./packages/component-library
+npm init -w ./projects/monorepo-site
+```
+
+This runs `npm install` for you too. Here's the first real difference from a normal repo: a `package.json` now exists at the root and inside every workspace, but there's only one `node_modules` and one `package-lock.json`. Everything gets managed from the root.
+
+## Install workspace-specific dependencies
+
+`npm install` still works, but it needs to run from the root with a `-w` flag pointing at the target workspace. Here's Next.js going into `monorepo-site`:
+
+```bash
+npm install --save next react react-dom -w monorepo-site
+```
+
+Run that from the root, where `node_modules` and `package-lock.json` live. The value passed to `-w` has to match the `name` field in that workspace's own `package.json`, in this case, `monorepo-site`.
+
+If it worked, you'll see the dependencies land in `projects/monorepo-site/package.json`:
+
+```javascript
+"dependencies": {
+  "next": "^13.0.6",
+  "react": "^18.2.0",
+  "react-dom": "^18.2.0"
+}
+```
+
+Repeat this for whatever `packages/component-library` needs too.
+
+## Set up components and Storybook
+
+This isn't a full Storybook setup tutorial, just enough to prove the monorepo wiring works. Since Storybook isn't a dependency of either workspace, install it at the monorepo root:
+
+```bash
+npm install --save-dev @storybook/react @storybook/manager-webpack5 @storybook/builder-webpack5 @storybook/addon-postcss
+```
+
+Add the build commands to the root `package.json`:
+
+```javascript
+"storybook": "start-storybook -p 6006",
+"build-storybook": "build-storybook"
+```
+
+Create a `.storybook` folder at the monorepo root with two files.
+
+`main.js` handles Storybook's configuration:
+
+```javascript
+module.exports = {
+  "stories": [
+    "../packages/component-library/**/*.stories.jsx",
+  ],
+  "addons": [ {
+    name: '@storybook/addon-postcss',
+    options: {
+      styleLoaderOptions: {},
+      cssLoaderOptions: {
+        modules: true,
+        sourceMap: true,
+        importLoaders: 1,
+      },
+      postcssLoaderOptions: {
+        implementation: require('postcss'),
+      },
+    },
+  }
+  ],
+  "framework": "@storybook/react",
+  "core": {
+    "builder": "@storybook/builder-webpack5"
+  }
+}
+```
+
+This tells Storybook where to find component stories, wires in `@storybook/addon-postcss` (with PostCSS Modules enabled via the extra options), and configures `framework` and `core` to use Webpack v5.
+
+`preview.js` gets a decorator:
+
+```javascript
+export const decorators = [
+  (Story, context) => {
+    return (
+      <div style={{
+        padding: '1rem',
+        display: 'flex',
+        justifyContent: 'center'
+      }}
+      >
+        <div>
+          <Story {...context} />
+        </div>
+      </div>
+    );
+  }
+];
+```
+
+`preview.js` lets you customize how stories look without touching the component logic itself, hence "decorator." This one just centers things with some basic padding.
+
+Add a `Button` component inside `packages/component-library` next, a component file and a story file are enough to prove the setup works. The exact implementation doesn't matter here, what matters is importing it into Next.js.
+
+## Set up the Next.js project
+
+Add a `pages` folder to the Next.js site, and the standard scripts to its `package.json`. In `projects/monorepo-site/package.json`, replace the scripts field with:
+
+```javascript
+"scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint"
+}
+```
+
+Add `pages/index.js`:
+
+```javascript
+const Home = () => {
+  return (
+    <main>
+      <h1>Hello! This is a NextJS + StoryBook Monorepo</h1>
+    </main>
+  );
+}
+
+export default Home
+```
+
+## Add the component to Next.js
+
+Import the Button into `projects/monorepo-site/pages/index.js`:
+
+```javascript
+import Button from '../../../packages/component-library/Button/Button.jsx'
+```
+
+Run `npm run dev` and you'll likely hit an error: Next.js doesn't transpile ES6 JavaScript from `node_modules` or any other folder outside its own reach by default.
+
+Fix it with a `transpileModules` entry in `next.config.js`:
+
+```javascript
+export const nextConfig = { transpileModules: ['component-library'] }
+```
+
+Note that this takes the workspace name, `component-library`, not the folder's path on disk. Restart the dev server after adding it.
+
+At this point your Button component lives in both Next.js and Storybook, and both are tracked in the same repo.
+
+One gotcha: Next.js 13 will ask for React 18. This walkthrough was written against Next.js v12 and React v17.0.2, so adjust versions if you're starting fresh today.
+
+## A couple of convenience scripts
+
+Without a shortcut, running a build means `cd`-ing into every project or package individually. Add these to the root `package.json` instead:
+
+```javascript
+"scripts": {
+  "build": "npm run build --workspaces --if-present",
+  "dev:monorepo-site": "npm run dev -w monorepo-site"
+}
+```
+
+`npm run build` at the root fires the build script in every workspace that has one, and quietly skips any that don't. Scale this out to three production sites sharing one library, and one command builds all of them.
+
+`npm run dev:monorepo-site` is narrower: it targets exactly one workspace and runs whatever script is defined there, so you can spin up that dev server from the root without navigating into its folder.
+
+## Where this leaves you
+
+A monorepo structure built on NPM workspaces, a component library and a production site sharing it through Storybook and Next.js, scripts that make the whole thing manageable from the root, and every dependency managed in one place instead of juggling submodules.
+
+From here, adding another site, extending the component library, or bringing in packages for CMS integrations or API support is all straightforward. The structure scales with however far you want to take it.

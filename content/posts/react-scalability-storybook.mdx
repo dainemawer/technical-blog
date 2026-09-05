@@ -1,0 +1,339 @@
+---
+title: Enhance Your React App's Scalability with Storybook and Chromatic
+dek: Component libraries and visual regression testing.
+date: '2024-02-05'
+topics:
+  - javascript
+shortAnswer: Storybook lets you build and document React components in isolation, outside your app's routing and state, so a component library stays usable by other projects instead of blocked by app-level decisions. Pair it with Chromatic for automated visual regression testing on every commit, and UI bugs get caught before production instead of during manual QA.
+takeaways:
+  - Storybook works well when component development is decoupled from bigger project architecture decisions. Non-technical stakeholders can review isolated components without the full app running.
+  - "UI-based addons (visual features) are usually simple to configure. Preset-based addons (framework integrations like TypeScript or Tailwind) often need real configuration work to match your build setup."
+  - "A story's default export configures the component (parameters, tags, argTypes). Every other named export is a variation, each just an object of props."
+  - Chromatic catches visual regressions and interaction bugs automatically on every commit through CI, instead of relying on someone noticing a UI break during manual QA.
+faq:
+  - question: What's the difference between UI-based and preset-based Storybook addons?
+    answer: "UI-based addons customize how Storybook itself looks and behaves, and usually need little setup. Preset-based addons integrate with another technology, TypeScript, Tailwind, a specific framework, and often need real configuration work, webpack or PostCSS changes, for example, to match your actual build."
+  - question: How do I publish a Storybook so non-technical stakeholders can see it?
+    answer: Run npm run build-storybook for a static build, then host it, GitHub Pages, Netlify, and S3 all work. GitHub Pages with a GitHub Action is the simplest route if you're not also setting up Chromatic.
+  - question: Is Chromatic free to use?
+    answer: Yes, with usage limitations. It integrates with your existing CI, GitHub Actions, for example, and runs visual regression checks directly against pull requests, so a regression gets flagged before it merges rather than after it ships.
+needsRewrite: false
+---
+
+Storybook is genuinely useful for engineers, product owners, and stakeholders alike. It lets frontend teams build component libraries without being blocked by bigger project architecture decisions, since components get developed and reviewed in isolation.
+
+It runs as a standalone app alongside your project, documenting components and their variations. Storybook ships with a lot of configurable features. Here's what I actually use day to day: installing and configuring it in a Create React App project, adding addons, writing stories, generating docs automatically, and publishing it to the web.
+
+## Set up and configure Storybook
+
+#### Installing Storybook
+
+Storybook fits into a lot of different project types. The most reliable way to get started is installing it into an existing app and running one command from the project root:
+
+```bash
+npx storybook@latest init
+```
+
+That inspects your project's dependencies and figures out the right way to install itself. If you're unsure whether your project is supported, check the [Frameworks page](https://Storybook.js.org/docs/react/configure/frameworks) in the docs.
+
+You can install it manually, but that tends to produce dependency mismatches and errors that aren't worth the trouble.
+
+#### Configuring Storybook
+
+Getting Storybook to line up with your actual tech stack is the harder part. Most of that configuration lives in `main.js`: documentation presentation, UI addons, even extending Webpack directly.
+
+TypeScript works out of the box. CSS needs its own setup, though most common approaches are supported, see the [Styling and CSS docs](https://Storybook.js.org/docs/react/configure/styling-and-css) for specifics.
+
+Spin up a Create React App instance to follow along:
+
+```bash
+npx create-react-app my-scalable-component-library
+```
+
+This bootstraps a basic React app. [Create React App](https://create-react-app.dev/) is what I'm using here, though other frameworks work too. Confirm it runs with `npm run start` before moving on.
+
+Install Storybook next, from the project root:
+
+```bash
+npx storybook@latest init
+```
+
+It'll detect that you're using CRA and prompt you to confirm a few updates. Accept them. If everything goes well, Storybook launches in your browser on its own dev server.
+
+Worth checking at this point: Storybook adds a `.storybook` folder for configuration, and a `stories` folder inside `src`. Each story is generally backed by three related files, more on that shortly.
+
+Your `package.json` and `package-lock.json` both get updated with new dependencies, plus two new scripts:
+
+```javascript
+"storybook": "storybook dev -p 6006",
+"build-storybook": "storybook build"
+```
+
+`npm run storybook` starts the dev environment. `npm run build-storybook` produces a publishable build.
+
+Run `npm run build-storybook` once, the output lands in a `storybook-static` folder, a "published" Storybook ready to be made public. At this point Storybook and CRA are fully wired together. Add `storybook-static` to `.gitignore` if you don't want to track the static output.
+
+You'll also notice a handful of example components got added to your project. Safe to remove, though I'd keep them around as reference for a while. Before moving on, here's what `main.js` actually looks like:
+
+```javascript
+/** @type { import('@storybook/react-webpack5').StorybookConfig } */
+const config = {
+  stories: [
+    "../src/**/*.mdx",
+    "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  addons: [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@storybook/preset-create-react-app",
+    "@storybook/addon-onboarding",
+    "@storybook/addon-interactions"
+  ],
+  framework: {
+    name: "@storybook/react-webpack5",
+    options: {},
+  },
+  docs: {
+    autodocs: "tag",
+  },
+  statistics: ["../public"],
+};
+
+export default config;
+```
+
+A few things worth knowing: `stories` tells Storybook where to look for component stories, update it if your file structure changes or stories quietly stop showing up. `framework` varies by project type. `docs` turns on automatic component documentation.
+
+The [Configure page](https://Storybook.js.org/docs/react/configure/overview) in the Storybook docs covers everything else `main.js` can control.
+
+## Decide on Storybook addons
+
+Addons are essentially plugins: pre-built packages that extend Storybook's core APIs, whether that's integrating a JS/CSS framework or changing Storybook's own default behaviour.
+
+There are two rough categories. UI-based addons change Storybook's own appearance and behaviour. Preset-based addons integrate other technologies, TypeScript, Tailwind, and so on. The [Integrations page](https://Storybook.js.org/integrations/) has the full catalogue.
+
+**Note:** some addons are maintained by the Storybook team directly, others by the community. Community addons can behave unpredictably or lag behind the latest Storybook version.
+
+Before adding more, it's worth knowing what ships by default:
+
+```javascript
+addons: [
+  "@storybook/addon-links",
+  "@storybook/addon-essentials",
+  "@storybook/preset-create-react-app",
+  "@storybook/addon-onboarding",
+  "@storybook/addon-interactions"
+],
+```
+
+Say you want to add the accessibility addon:
+
+```bash
+npm install @storybook/addon-a11y
+```
+
+Then register it in `main.js`:
+
+```javascript
+addons: [
+  "@storybook/addon-links",
+  "@storybook/addon-essentials",
+  "@storybook/preset-create-react-app",
+  "@storybook/addon-onboarding",
+  "@storybook/addon-interactions",
+  "@storybook/addon-a11y"
+]
+```
+
+Save `main.js` and restart Storybook with `npm run storybook`. An "Accessibility" tab now shows up on every story, already flagging real a11y issues in your components.
+
+UI-based addons like this one are usually low-effort. Preset-based addons tend to need more: extra webpack config, PostCSS plugins, or other build-level wiring specific to your stack. That can get genuinely fiddly depending on your framework, so go in carefully and check that whatever you add stays in sync with how your actual app is built.
+
+## Write and document component stories
+
+A story is tied to a component and its variations, written in React, Markdown, or a mix of both. Stories take parameters that map to whatever props the component accepts, and those props can be tweaked live inside the Storybook UI.
+
+Here's the Button story Storybook bootstraps by default:
+
+```javascript
+import { Button } from './Button';
+
+export default {
+  title: 'Example/Button',
+  component: Button,
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    backgroundColour: {
+      control: 'color'
+    },
+  },
+};
+
+export const Primary = {
+  args: {
+    primary: true,
+    label: 'Button',
+  },
+};
+
+export const Secondary = {
+  args: {
+    label: 'Button',
+  },
+};
+
+export const Large = {
+  args: {
+    size: 'large', label: 'Button',
+  },
+};
+
+export const Small = {
+  args: {
+    size: 'small',
+    label: 'Button',
+  },
+};
+```
+
+The default export is always the main configuration. Most of it is self-explanatory, but a few keys are worth calling out specifically:
+
+- `parameters`: static, named metadata about a story, generally used to control Storybook features and addon behaviour.
+- `tags`: drives automatic documentation generation per story. More on [AutoDocs](https://Storybook.js.org/docs/react/writing-docs/autodocs).
+- `argTypes`: controls or annotates how args behave. More on [arg types](https://Storybook.js.org/docs/react/api/arg-types).
+
+Every named export after the default is a variation, each just an object with an `args` key matching your component's props. Each shows up under the same component in Storybook's UI, ready to interact with.
+
+Decorators matter once stories get more complex. A decorator wraps a story in extra context or functionality, set via the `decorators` key:
+
+```javascript
+decorators: [
+  (Story) => (
+    <div style={{ margin: '3em' }}>
+      {/* Decorators also accept a function. Replace <Story/> with Story() to enable it */}
+      <Story />
+    </div>
+  ),
+],
+```
+
+Here, a `<div>` wraps the component and gives it 3em of margin.
+
+Stories can also consume components from other stories, though how well that works depends on how your components render and how much detail you're layering into the app overall. The docs cover [sub-components](https://Storybook.js.org/docs/react/writing-stories/stories-for-multiple-components) in more detail.
+
+#### Writing a story for a real component
+
+Let's add a `Footer` component to prove this out. It needs three files in `src/stories`: `Footer.jsx`, `Footer.stories.js`, and an optional `footer.css` if you want it styled. Here's `Footer.jsx`:
+
+```javascript
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export const Footer = ({ siteOwner, showCopyRight }) => (
+  <footer>
+    <div className="footer">
+      {showCopyRight && (
+        <div>
+          <span>
+            <span role="img" aria-label="copy">©️</span>
+            2018 {siteOwner}.
+          </span>
+        </div>
+      )}
+    </div>
+  </footer>
+);
+
+Footer.propTypes = {
+  siteOwner: PropTypes.string.isRequired,
+  showCopyRight: PropTypes.bool,
+};
+
+Footer.defaultProps = { showCopyRight: true, };
+```
+
+It takes two props: `siteOwner` and `showCopyRight`. Here's the story:
+
+```javascript
+import { Footer } from './Footer';
+
+export default {
+  title: 'Example/Footer',
+  component: Footer,
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',
+  },
+};
+
+export const WithSiteOwner = {
+  args: { siteOwner: 'Jane Doe', showCopyRight: true, },
+};
+
+export const WithOutCopyRight = {
+  args: {
+    siteOwner: 'Jane Doe',
+    showCopyRight: false,
+  },
+};
+```
+
+A contrived example, but it shows how little effort a story actually takes. Save this as `Footer.stories.js` and you get an auto-documented, multi-variant story where the props are fully interactive.
+
+Try changing `siteOwner` directly in the story controls. To style it, import `footer.css` into `Footer.jsx` and reference the class names. To see it inside a real React app instead of Storybook:
+
+```javascript
+import { Footer } from './stories/Footer';
+// ...
+<Footer siteOwner='Daine Mawer' showCopyRight />
+```
+
+That's a component and its story, done. Next: getting it published.
+
+## Publish your Storybook
+
+Running Storybook locally works fine for engineers, since the config lives in version control anyway. A published URL is a lot more useful for non-technical stakeholders who just want to look at the components.
+
+A production build of Storybook outputs static files to a build folder, and it's a single command:
+
+```bash
+npm run build-storybook
+```
+
+The build fails outright on any build error, so there's no risk of publishing something broken. From there, you need somewhere to host it: GitHub Pages, Netlify, and S3 all work, some with more setup than others.
+
+If Chromatic isn't part of the plan, GitHub Pages is the simplest option. A [GitHub Action](https://Storybook.js.org/docs/react/sharing/publish-Storybook#github-pages) handles most of the configuration for you.
+
+## Set up Chromatic for visual regression testing
+
+Chromatic runs alongside Storybook and is maintained by the same team, so wiring it into an existing app and CI pipeline takes very little effort.
+
+The payoff is real: visual regressions and interaction bugs get caught before they reach production, and it gives a team a shared, visual way to review UI changes together rather than relying on someone spotting a regression manually. It's free, with usage limits.
+
+To hook it up to a published Storybook: sign up for a Chromatic account and grab a project token, then install the package:
+
+```bash
+npm install --save-dev chromatic
+```
+
+Add a script to `package.json`:
+
+```javascript
+"scripts": {
+  "chromatic": "chromatic"
+}
+```
+
+Add a `.env` file with `CHROMATIC_PROJECT_TOKEN` set to your project token, then run `npm run chromatic`. That publishes your Storybook to Chromatic, where you get a proper UI for reviewing component changes.
+
+The catch: run manually like this, you have to remember to do it every time a component changes. For anything beyond a small project, wiring this into CI on every commit is the better call, Chromatic integrates directly with pull requests.
+
+On GitHub, add a `workflows` folder under `.github` and follow [Automate Chromatic with GitHub Actions](https://www.chromatic.com/docs/github-actions/) to get it running. From there, every commit to your components runs UI tests and a visual review automatically.
+
+## Where this leaves you
+
+Storybook and Chromatic together give a team real confidence shipping component changes: features and fixes move faster, and the product stays documented, scalable, and easy to extend as it grows.
+
+_Read the original article on [Sitepoint](https://www.sitepoint.com/scale-react-app-storybook-chromatic/)_

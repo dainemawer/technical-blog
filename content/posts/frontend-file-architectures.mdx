@@ -1,0 +1,181 @@
+---
+title: 5 Frontend File Architectures for Better Code Organization
+dek: Flat, hierarchical, modular, component-based, and feature-based, compared.
+date: '2023-01-18'
+topics:
+  - javascript
+shortAnswer: There are five common ways to structure a frontend project. Flat (everything in one folder), hierarchical (grouped by file type), modular (grouped by self-contained module), component-based (grouped by UI component, the React/Vue default), and feature-based (grouped by product feature, like blog or cart). Which one fits depends mostly on project size and how your team works, not a universal best answer.
+takeaways:
+  - Flat architecture only works at very small scale. Past a handful of files it gets disorganized fast.
+  - Component-based architecture is the default for React and Vue projects, and pairs naturally with code splitting.
+  - Feature-based architecture (grouping by blog, shop, cart, and so on) is still common in monolith frameworks like Laravel and WordPress, and works well when a team ships around discrete product features.
+  - None of these five is objectively best. The right choice depends on project size, team size, and which stack you're already committed to.
+faq:
+  - question: What's the difference between component-based and feature-based architecture?
+    answer: Component-based groups files by UI component, a Header folder with its markup, styles, and tests together. Feature-based groups files by product feature, a blog or cart folder containing everything that feature needs, including its own components. Component-based is the default in React and Vue projects; feature-based shows up more in larger, monolith-style codebases.
+  - question: When does flat file architecture stop working?
+    answer: Almost as soon as a project grows past a handful of files. With no folder structure at all, the cognitive load of finding anything specific climbs fast, and nothing enforces consistency as more files get added.
+  - question: Do I have to pick just one architecture?
+    answer: No. Most real projects end up mixing them, a component-based core with feature folders for large product areas, for example. Treat these as starting points, not rigid categories.
+needsRewrite: false
+---
+
+Picking the right file architecture early can save a lot of pain later, especially once a frontend project starts to scale. There are several common approaches, each with real trade-offs. Here are five of them, and where each one tends to hold up or fall apart.
+
+## Flat architecture
+
+```text
+|- index.html
+|- style.css
+|- analytics.js
+|- about.html
+|- modernizer.js
+```
+
+The simplest option: everything lives in a single directory. It works fine for micro or small projects, but the moment a project grows, file count and file types tend to spiral out of control.
+
+Without any explicit hierarchy, collaborators carry a higher cognitive load just finding things, which tends to lead to disorganized, ad-hoc additions over time.
+
+**Benefits**
+
+- Quick and simple to get started
+- Hosts easily on GitHub Pages or Amazon S3
+- Simple version control
+- Almost no overhead in understanding how the project is organized
+
+**Downsides**
+
+- Scalability is seriously limited
+- File types end up mixed together with no real order
+- Finding where a piece of functionality actually lives gets harder over time
+
+## Hierarchical architecture
+
+```text
+|- css/
+|- javascript/
+|- assets/
+|- images/
+|- fonts/
+|- index.html
+```
+
+Here, a project is split across multiple directories, generally by file type: CSS, JavaScript, and assets like images and fonts. That makes it easier to reason about where a given piece of code lives.
+
+Each folder can go a level deeper into more semantic groupings. The CSS folder, for example, might look like:
+
+```text
+|- css/
+  |- base/
+  |- components/
+  |- typography/
+```
+
+**Benefits**
+
+- More scalable than flat architecture
+- Clearer organizational semantics
+- Less overhead since file types are grouped
+- Predictable, logical structure
+
+**Downsides**
+
+- More complex to set up
+- Opinionated. There's no single "right" way to structure it
+- Can be slower at scale if traversal across many nested folders adds up
+
+## Modular architecture
+
+```text
+|- index.html
+|- modules
+  |- ExampleModule
+    |- components
+    |- tests
+    |- helpers
+    |- mocks
+    |- services
+    |- types
+```
+
+Each module is self-contained: everything related to it, components, types, tests, helpers, lives in one folder. That makes updating a module's various pieces faster, since everything relevant stays close together.
+
+It also gives a high-level view of what the site actually does, which helps new contributors get oriented faster.
+
+**Benefits**
+
+- Encourages reusable components
+- Scales cleanly since new modules slot in on their own
+- Easier to test and maintain long-term
+- More natural opportunities for code splitting
+
+**Downsides**
+
+- Can get complex as the module count grows
+- Usually depends on a build tool or task runner
+- Only works well if developers keep components standardized
+- Somewhat steeper learning curve
+
+## Component-based architecture
+
+```text
+|- src
+  |- components
+    |- Header
+      |- index.jsx
+      |- Header.module.css
+```
+
+Familiar to anyone who's built with React: components are grouped by their own folder, each one self-contained and reusable. Larger features get built by composing smaller components together. This pattern fits frameworks like React or Vue that are built around components in the first place.
+
+**Benefits**
+
+- Reusability is the whole point
+- More efficient to maintain and extend over time
+- Easy to test
+- Better performance potential through code splitting and dynamic loading
+- Familiar developer experience, quick to pick up
+
+**Downsides**
+
+- Can get complex fast with a build tool like Webpack in the mix
+- Fairly steep learning curve
+- Easy to over-engineer
+- Navigating the codebase can feel scattered when functionality is spread thin across many small files
+
+## Feature-based architecture
+
+```text
+|- src
+  |- features
+    |- blog
+    |- shop
+    |- cart
+    |- components
+    |- pages
+    |- services
+```
+
+Here the codebase is organized around features rather than file type or component. Each feature, blog, shop, cart, gets its own directory containing everything it needs, with further sub-folders as needed. That tends to make it easier to see how the product's functionality fits together.
+
+This works especially well when a team's roadmap is organized around shipping discrete features. It's still common in more monolithic frameworks like Laravel and WordPress, where it gives a clear, orienting structure.
+
+**Benefits**
+
+- Easy to find related functionality in one place
+- Features can be added or removed cleanly
+- Straightforward to test and maintain long-term
+- Better overall developer experience
+- Isolation between features protects functionality from bleeding into unrelated code
+
+**Downsides**
+
+- Steeper learning curve for new developers
+- Needs a standardized approach to design patterns to stay consistent
+- Risk of over-engineering
+- Shared functionality can still cause overlap between features
+- Can produce a lot of smaller files that each do very little on their own
+
+## Choosing one
+
+There's no simple formula here. Scalability should come first, but developer experience, how often features get built or extended, and how easily things can be added or removed all matter too. The stack matters as well: what works well for a React project won't necessarily be the right call for a WordPress-based one.

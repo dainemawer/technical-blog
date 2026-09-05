@@ -1,0 +1,100 @@
+---
+title: 'Leading With AI: What Helped Me Through the Hard Parts'
+dek: How I used AI through the Monocle.com rebuild.
+date: '2025-10-05'
+topics:
+  - engineering-management
+shortAnswer: AI acted as a sounding board through the Monocle.com rebuild in five concrete ways. Validating technical decisions before looping in the team, scaffolding MVPs fast without burning out, speeding up hard-to-diagnose bugs, helping with unfamiliar backend work, and calming down messages written under pressure.
+takeaways:
+  - Using AI as a sounding board before asking a teammate meant showing up to that conversation with sharper thinking already, not less thinking.
+  - Scaffolding MVPs with AI freed up energy for the genuinely hard parts of a feature instead of burning it on boilerplate.
+  - AI was often faster at surfacing a known, obscure bug, like a Safari 100vw quirk, than an hour of manual debugging would have been.
+  - Asking AI to explain unfamiliar conventions made it possible to contribute confidently outside a usual role, like a frontend engineer writing backend PHP.
+  - Running a stressed, reactive message through AI before sending it caught tone problems that would have been harder to walk back afterward.
+faq:
+  - question: Does using AI at work mean relying on it instead of building real skills?
+    answer: Not in this experience. AI reinforced existing skills rather than replacing them. It helped with moving faster under time pressure, getting unstuck on ambiguous problems, and communicating more clearly, not with skipping the thinking altogether.
+  - question: Can AI actually help with people problems, not just code?
+    answer: Yes. Using AI to gut-check a stressed or reactive message before sending it, to make it calmer and clearer, turned out to be one of the more useful, if less obvious, applications during a high-pressure project.
+  - question: Is it worth using AI to validate a technical decision before asking a teammate?
+    answer: Often, yes. It won't replace a real conversation, but using it as an initial sounding board on an unfamiliar pattern or edge case tends to sharpen your own thinking before you bring the question to someone else.
+needsRewrite: false
+---
+
+_Real moments and hard-won lessons from leading the Monocle.com rebuild._
+
+The new [Monocle.com](https://monocle.com) site launched recently, the result of a long stretch of highs, lows, frustrations, and wins across every discipline. It stands out as one of the most challenging projects I've worked on at [10up](https://10up.com), not just for its technical complexity, but for how the team worked together. The process, the resourcing, and the sudden surge of conversation around AI all made it a genuinely unusual experience.
+
+I've always been fairly pro-AI. I don't see it as a threat to my role. I see it as a tireless teammate that helps me work smarter, move faster, and do better work. In this post I want to share how I actually used AI throughout the Monocle project, not just in engineering, but in the parts of the job that go beyond code.
+
+Here are five ways AI genuinely helped, with real examples, since I'd rather show that it works than just claim it.
+
+## Gut-checking technical decisions
+
+One of the hardest parts of leading a team is making decisions under ambiguity, quickly. I used AI as a sounding board to test my thinking when navigating an unfamiliar pattern, an edge case, or a genuinely murky technical call. It gave me something like a second brain to bounce ideas off, which cut down on decision fatigue and let me move forward with more confidence.
+
+The real value wasn't landing on the right answer. It was not having to interrupt someone else just to get a gut check. We've all had the moment where you want to ask a web engineer "does this make sense?" and hold back, not wanting to slow them down or add pressure. AI closed that gap. By the time I brought a question to a teammate, I'd usually already sharpened my thinking enough to have a better conversation.
+
+**Experience:**
+
+During the Monocle build, we integrated a fairly new headless ecommerce platform called Swell. It needed to talk to Piano for user authentication, and on the frontend we were layering in Alpine.js for reactivity. I had a solid grasp of Alpine's model, but the orchestration between Swell and Piano wasn't immediately obvious.
+
+Before jumping on a call or writing up a pile of questions, I used AI to get more context on both systems: their stacks, how their APIs worked, the general approach each team seemed to favor. Then I asked it to generate a minimal, working example of how the two platforms could integrate. That was enough context to mentally map the interaction and move forward with confidence.
+
+## Rapid MVPs without burnout
+
+On a high-pressure project like Monocle, there's rarely time to spare, especially when a new feature exists just to help drive a decision or unblock another team.
+
+Rather than burn hours on something that might get thrown out after one stakeholder review, I started using AI to scaffold MVPs. I'd describe what I needed, a saved-views panel, a reactive dropdown filter, a basic TypeScript schema, and get back a clean starting point I could tweak and wire up quickly.
+
+That wasn't about cutting corners. It let me save my energy for the parts that actually needed deeper thinking or polish, without losing momentum on the rest.
+
+**Experience:**
+
+The team requested a custom ad unit inspired by Wimbledon's Rolex sponsorship, specifically a live ticking clock face synced to the user's local timezone. Looking at the Rolex example, I realized how much was actually involved: real-time sync, timezone logic, animation performance, accessibility, and more.
+
+With AI, I broke the feature down quickly, explored a few animation strategies, and had a working MVP. It helped us estimate more accurately and kept pressure off me, while still delivering something that mattered.
+
+## Faster debugging with AI
+
+Everyone's had that bug: subtle and completely undocumented, the kind where you open ten tabs hoping one 2013 StackOverflow post has the answer.
+
+AI changed how I debug. I could describe the issue, paste a snippet, and get back pointed analysis, sometimes an edge case I'd missed entirely. It saved time, but more importantly it helped me understand _why_ something was breaking faster, and that's the part that actually counts.
+
+**Experience:**
+
+Monocle needed a horizontally scrollable component, a pattern I've come to dread on the web. Unlike mobile, the browser ecosystem is full of quirks that break even a clean, careful slider implementation.
+
+I built a CSS-only version with some JS layered in for accessibility. It worked well until Safari started misbehaving. Instead of falling down a rabbit hole, I asked AI to help diagnose it. Within minutes it pointed me at a known 100vw rendering issue in Safari. That single call saved hours of trial and error.
+
+## Stepping into backend territory
+
+Frontend engineers usually turn data into UI. On Monocle, that line blurred. With backend engineers stretched thin, I stepped in more than once: writing PHP, digging into unfamiliar parts of the theme, trying to help without slowing anyone down.
+
+AI acted as a guide here, helping me understand Fueled's backend conventions, structure logic properly, and write code that wouldn't need heavy rework later.
+
+**Experience:**
+
+For a few weeks I stepped up, not as a backend engineer, but as a frontend engineer willing to help where needed. I've worked with PHP and WordPress APIs for years, but Fueled's standards keep evolving, and every project gets a bit more abstracted and refined than the last.
+
+I wanted to contribute something real, so I asked AI to walk me through Fueled's conventions and help with a small feature I was building alongside Konstantinos. I was nervous about that PR. It passed without a hitch. Small win, but a real reminder that with the right support, it's possible to stretch into unfamiliar territory and still ship solid work.
+
+## Clearer communication under pressure
+
+Leading a long, demanding project carries real emotional weight, and that stress has a way of creeping into how you show up in Slack, code review, or a project update. I didn't want that, for myself or the team.
+
+So I started running my messages through AI before sending them. I'd write them raw, then ask for help making them calmer, clearer, and less reactive. Not fake, just clearer. It turned into a small but genuinely useful habit.
+
+**Experience:**
+
+This might be a slightly uncomfortable thing to admit, but relationships are complicated and communication is hard, especially when the team's tired and a client keeps moving the goalposts.
+
+I had plenty of support already, credit to Gabe, Lily, and Brent for that. What I actually needed was clarity. AI helped me take a breath, tighten my language, and keep frustration from bleeding into how I communicated. I ramble when I'm stressed, and AI helped me cut the noise and get to the point. I even picked up a few better ways to say something difficult without it landing harshly.
+
+## Final thoughts
+
+Looking back, AI didn't replace the skills I already had. It reinforced them. It helped me move faster when time was short, get unstuck when a problem was genuinely murky, and communicate more clearly when the pressure was on.
+
+What surprised me most wasn't the technical help. It was the quiet confidence it gave me. Whether I was gut-checking a feature, scaffolding a tricky integration, or rewriting a message before hitting send, AI became a steady presence in the background that made me a better lead.
+
+None of this was about shortcuts. It helped me show up better, and get the job done well.

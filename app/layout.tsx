@@ -6,6 +6,7 @@ import { CommandPaletteMount } from "@/components/command-palette-mount";
 import { InertWhenModalOpen } from "@/components/inert-when-modal-open";
 import { SubscribeModalProvider } from "@/components/subscribe-modal-context";
 import { SubscribeModalMount } from "@/components/subscribe-modal-mount";
+import { getAllPosts } from "@/lib/posts";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -51,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CommandPaletteProvider>
           <SubscribeModalProvider>
             <InertWhenModalOpen>{children}</InertWhenModalOpen>
-            <CommandPaletteMount />
+            <CommandPaletteMount posts={getAllPosts()} />
             <SubscribeModalMount />
           </SubscribeModalProvider>
         </CommandPaletteProvider>
