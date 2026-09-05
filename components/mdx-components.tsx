@@ -22,7 +22,11 @@ async function Pre({ children }: { children: CodeElement }) {
 
 // Inline `<code>` (not a fenced block, which is handled by Pre above).
 function InlineCode({ children }: { children: ReactNode }) {
-  return <code className="font-mono text-ink text-sm">{children}</code>;
+  return (
+    <code className="rounded bg-ink/5 px-1 py-0.5 font-mono text-ink text-sm">
+      {children}
+    </code>
+  );
 }
 
 function Heading2({ children, id }: { children: ReactNode; id?: string }) {

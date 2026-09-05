@@ -30,7 +30,10 @@ export function renderInlineText(text: string): ReactNode[] {
     }
     if (code !== undefined) {
       nodes.push(
-        <code key={key++} className="font-mono text-ink text-sm">
+        <code
+          key={key++}
+          className="rounded bg-ink/5 px-1 py-0.5 font-mono text-ink text-sm"
+        >
           {code}
         </code>,
       );

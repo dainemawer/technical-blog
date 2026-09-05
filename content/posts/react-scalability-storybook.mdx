@@ -200,9 +200,9 @@ export const Small = {
 
 The default export is always the main configuration. Most of it is self-explanatory, but a few keys are worth calling out specifically:
 
-- **parameters**: static, named metadata about a story, generally used to control Storybook features and addon behaviour.
-- **tags**: drives automatic documentation generation per story. More on [AutoDocs](https://Storybook.js.org/docs/react/writing-docs/autodocs).
-- **argTypes**: controls or annotates how args behave. More on [arg types](https://Storybook.js.org/docs/react/api/arg-types).
+- `parameters`: static, named metadata about a story, generally used to control Storybook features and addon behaviour.
+- `tags`: drives automatic documentation generation per story. More on [AutoDocs](https://Storybook.js.org/docs/react/writing-docs/autodocs).
+- `argTypes`: controls or annotates how args behave. More on [arg types](https://Storybook.js.org/docs/react/api/arg-types).
 
 Every named export after the default is a variation, each just an object with an `args` key matching your component's props. Each shows up under the same component in Storybook's UI, ready to interact with.
 
