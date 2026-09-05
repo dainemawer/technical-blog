@@ -1,19 +1,22 @@
-import { articleContent } from "@/lib/article-content";
 import { generateLlmsTxt } from "@/lib/llms";
+import { getPostContent } from "@/lib/mdx";
 import { getAllPosts } from "@/lib/posts";
 
 function generateLlmsFullTxt(): string {
   const parts = [generateLlmsTxt(), "", "## Full article text", ""];
 
   for (const post of getAllPosts()) {
-    const content = articleContent[post.slug];
+    const content = getPostContent(post.slug);
     if (!content) continue;
 
-    parts.push(`### ${post.title}`, "", content.shortAnswer, "");
-    for (const section of content.sections) {
-      if (section.heading) parts.push(`#### ${section.heading}`, "");
-      parts.push(...section.paragraphs, "");
-    }
+    parts.push(
+      `### ${post.title}`,
+      "",
+      content.shortAnswer,
+      "",
+      content.rawBody,
+      "",
+    );
   }
 
   return parts.join("\n");

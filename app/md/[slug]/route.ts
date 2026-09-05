@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import { articleContent } from "@/lib/article-content";
+import { getPostContent } from "@/lib/mdx";
 import { getPostBySlug } from "@/lib/posts";
 
 export async function GET(_request: Request, ctx: RouteContext<"/md/[slug]">) {
   const { slug } = await ctx.params;
   const post = getPostBySlug(slug);
-  const content = articleContent[slug];
+  const content = getPostContent(slug);
 
   if (!post || !content) notFound();
 
@@ -18,17 +18,12 @@ export async function GET(_request: Request, ctx: RouteContext<"/md/[slug]">) {
     "",
     content.shortAnswer,
     "",
+    content.rawBody,
   ];
 
-  for (const section of content.sections) {
-    if (section.heading) lines.push(`## ${section.heading}`, "");
-    lines.push(...section.paragraphs, "");
-  }
-
   if (content.takeaways.length > 0) {
-    lines.push("## Takeaways", "");
+    lines.push("", "## Takeaways", "");
     for (const takeaway of content.takeaways) lines.push(`- ${takeaway}`);
-    lines.push("");
   }
 
   return new Response(lines.join("\n"), {
