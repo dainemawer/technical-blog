@@ -1,158 +1,131 @@
 ---
-title: 10 Proven Techniques for More Effective Code Reviews
-dek: >-
-  Code reviews are an essential part of the software development process. In
-  this article, we'll discuss 10 best practices for conducting effective code
-  reviews, including starting early, having a clear process, and following up on
-  feedback.
+title: 10 Techniques for More Effective Code Reviews
+dek: Practical ways to make code review less painful and more useful.
 date: '2023-02-21'
 topics:
   - engineering-management
-shortAnswer: >-
-  Code reviews are an essential part of the software development process. In
-  this article, we'll discuss 10 best practices for conducting effective code
-  reviews, including starting early, having a clear process, and following up on
-  feedback.
-takeaways: []
-faq: []
-needsRewrite: true
+shortAnswer: Code review breaks down for the same handful of reasons every time. Reviewing only once at the end, no defined process, and feedback aimed at the person instead of the code. Review in stages instead of one final pass, define the process in writing before a project starts, automate what a linter can catch, and phrase feedback as questions or suggestions rather than instructions.
+takeaways:
+  - Review a feature in stages, not just once at the end. Checking in at 25% and 75% complete gives room to course-correct before a full review.
+  - Automate anything a linter or CI check can catch. Spending human review time on formatting wastes everyone's time.
+  - "Ask questions instead of stating mistakes. \"Why is this a string here but an array there?\" lands very differently from \"this is wrong.\""
+  - A written PR checklist (ticket link, approach, test instructions) does more for review consistency than relying on everyone remembering what to include.
+  - Not everything is worth a review comment. Save the pushback for things that actually affect functionality, not naming preferences.
+faq:
+  - question: How many times should a feature be reviewed before merging?
+    answer: "More than once, ideally. A quick check-in around 25% and 75% complete, even just eyeballing a draft PR, catches problems early, with a full, thorough review once the engineer considers the feature done."
+  - question: How do you give code review feedback without it feeling personal?
+    answer: "Phrase it as a question or a suggestion instead of an instruction. \"Why is this a string here?\" instead of \"this is wrong,\" or \"perhaps this would work better as...\" instead of \"you must change this.\" Aim the comment at the code, not the person who wrote it."
+  - question: What should a code review checklist include?
+    answer: A link to the ticket, a description of the technical approach, links to designs, screenshots of the feature, and clear instructions for how to test it. Kept up consistently, it becomes a useful record for tracking down where a bug came from.
+needsRewrite: false
 ---
 
-## Introduction
+Code review is as routine as any other part of shipping software. It's central to quality, standards, collaboration, and how a team actually learns from each other.
 
-Any engineer will tell you performing code reviews is as normal as breathing air in the tech world. Code reviews are integral to the software development lifecycle by ensuring quality, standards, team collaboration, knowledge sharing and learning.sss
+How to do it well is a lot less settled. A code review sits at the intersection of human judgment and machine code, and that's exactly where it tends to go wrong. People already have a hard enough time talking to each other, let alone talking about code neither of them fully agrees on. Reviews can turn personal, hold up a sprint over a stubborn disagreement, or leave someone dreading their next PR notification.
 
-As much as we know that code reviews are mandatory, the jury is out about how best to dish them out. A code review, in many ways, becomes an intersection of human and machine collaboration. Humans debate and collaborate to better the machine code to ensure its intended function.
+None of that is inevitable. Here are ten things that actually help.
 
-It's this very intersection where the problem begins. Humans have a hard enough time conversing with each other, never mind talking about code that a machine is barely intelligent enough to process. Often, code reviews can become personal, offensive and filled with dread. They can hold up sprints or project deadlines due to stubborn and egotistical mindsets or cause panic in those who don't understand the intended feedback.
+## Review a feature more than once
 
-Fortunately, there are ways to overcome these challenges, so here are ten techniques for giving, accepting and working with code reviews:
+A common misconception is that a feature only needs reviewing once, right at the end. That's a bit like arriving somewhere with no idea how you got there. Constant review of the same code isn't efficient, but staying close to a feature as it develops is.
 
-## Perform Multiple Reviews Per Feature
+Check in at 25% and 75% complete, for example. That gives room to course-correct early, and it helps you understand what the engineer is actually trying to build, not just what they eventually submit. Junior engineers especially tend to appreciate it: it feels like building the feature together rather than being graded on it at the end.
 
-One giant misconception about code reviews is that the code should only be reviewed once. It's like arriving at your destination without knowing how you got there. Whereas it's not feasible or efficient to constantly check the same code, it is valuable to be close to the development of that feature on a daily or weekly basis.
+A quick look at a draft PR at each checkpoint is usually enough. Save the deep review for when the engineer considers the feature done.
 
-This helps you, as the reviewer, understand what the engineer submitting the code review is trying to achieve; it outlines their thought process and uncovers their struggles.
+## Define a clear process upfront
 
-I would suggest regular check-ins regarding code reviews, perhaps when a feature is 25% or 75% complete. This gives you multiple opportunities to course correct if need be. Junior developers will also appreciate the guidance, as it will feel like you're building the feature with them.
+Before development starts, settle a few basics as a team:
 
-As time may not always allow for three rounds of detailed review, doing a brief check-in via a Draft PR for the 25% and 75% milestones may be worthwhile. A thorough review can be performed when the submitting engineer thinks the feature is finished.
+- Who reviews what?
+- Which automated tools are in play?
+- How often does review happen?
+- What actually happens during a review?
+- How are reviews assigned?
+- How should a branch be prepared before review?
+- What's the merge strategy, and are branches deleted after?
 
-## Define a Clear Process
+Write the answers down somewhere the team can refer back to. Once everyone's agreed on it, stick to it, and if it changes, make sure the whole team knows why.
 
-Before launching into feature development, defining a straightforward process for code reviews can go a long way. This may involve:
+## Focus on the code, not the person
 
-*   Who will perform code reviews?
-*   What automated tools will be used?
-*   How often should a code review take place?
-*   What activities will take place during the code review?
-*   What are the steps to submit a code review?
-*   Who is responsible for assigning tickets/code reviews to relevant engineers?
-*   How should developers prepare their branches?
-*   What merge strategy should be used?
-*   Should branches be deleted after merging?
+Written feedback is easy to misread, more than most reviewers realize, especially across language and culture. A comment meant as neutral can land as blunt or even hostile.
 
-It often helps to define a document that outlines these questions and their answers to help make the team more efficient. Once all members agree on a process, follow it and try not to change it too much.
+A few things that help:
 
-Always communicate with the team when there's a process change and ensure complete alignment and understanding.
+- Keep some of it light. A joke or an emoji goes a long way.
+- Lead with empathy, not correction.
+- Suggest rather than instruct: "perhaps this would work better as..." instead of "you must stop doing..."
+- Aim at the code, not the person: "a clearer understanding of the CSS cascade would make this more efficient" instead of "you don't understand the cascade."
+- Treat every comment as a two-way teaching moment, not a verdict.
 
-## Focus On Code, Not People
+## Ask questions instead of assuming mistakes
 
-All too often, code reviewers can leave borderline insulting, offensive or rude comments on PRs - written language can be conveyed and interpreted in many different ways, depending on language barriers, culture, and the general mood/sensitivity of the engineer submitting their work.
+Asking a question instead of pointing out a mistake disarms a review almost instantly. It's a lot less confrontational than telling someone their code needs refactoring. A few ways to phrase it:
 
-Feedback like this can often come back as "too direct" and does not contribute to a cohesive working environment. When addressing feedback on a code review, try to:
+- "Can you walk me through how this function works?"
+- "Why is this a string here but an array over there?"
+- "What's this variable actually for?"
 
-*   Keep it light-hearted, kid around a bit, or use emojis.
-*   Be empathetic.
-*   Suggest, rather than instruct: "Perhaps it would be better to…" rather than "You must stop doing…."
-*   Avoid blameful or aggravating language: "A better understanding of the CSS cascade would help make this code more efficient" instead of "You don't understand how the CSS cascade works".
-*   Treat every feedback item as a learning experience for the engineer having their work reviewed. Likewise, as the code reviewer, every feedback item you leave is a teaching moment.
+It also puts the reviewee in the position of explaining their own logic, which tends to build confidence rather than dent it, and it usually gets you a clearer picture of what they were going for.
 
-## Ask Questions; Dont Assume Mistakes
+## Automate what you can
 
-One thing I've found particularly useful in the past is asking a question instead of calling out a mistake. This disarms the situation immediately as your intention is clear; asking a question is less aggressive than pointing out that the code submitted needs refactoring. Asking a question can take many forms:
+Don't spend review time calling out things a linter would already catch, especially if the tooling exists and just isn't wired in yet.
 
-*   "Can you explain to me how this function works?"
-*   "Why is this value a String on line 117 but an Array on 120?"
-*   "What is the purpose of this variable?"
+GitHub Actions can run these checks automatically on push or PR. Husky or lint-staged narrow that further, running lint scripts only against changed files. Between the two, most styling issues and careless mistakes never need a human eye at all.
 
-Asking questions disarms the engineer who submitted the request and helps you understand the logic better. The reviewee will feel like they are teaching you, increasing their self-confidence.
+Worth automating specifically: CSS and JS code style, framework conventions, unit tests, and performance or end-to-end tests. Automated tools won't catch everything, but they'll catch most of what wastes a reviewer's time.
 
-## Leverage Automated Tooling
+## Encourage open dialogue
 
-Perhaps the most critical point on this list is that as a code reviewer, you do not want to spend time calling out code mistakes that could have been caught with linting tools…especially if the project has them set up already.
+The reviewer/reviewee dynamic already tilts the conversation, and a PR thread isn't always the right place to work through something in depth. Some things are worth taking offline.
 
-Many platforms offer integrations for automated tooling to run in CI/CD pipelines that can make this a breeze. Github, for instance, allows you to run automated tasks through GitHub Actions, which can fire on pull requests or git push.
+Worth paying attention to while you do:
 
-You can also use tools like Husky or Lint-Staged to run linting scripts on only the code that has changed on the branch. This way, code styling, best practices and silly errors can be caught without needing a human eye.
+- How much of your time is actually going into mentoring versus reviewing.
+- Whether the reviewee is treating feedback as a learning opportunity rather than something to get defensive about.
+- Whether less senior engineers feel able to push back on a suggestion. That needs active encouragement, whether in a 1:1 or a team session, depending on what they're comfortable with.
 
-Of course, automated tools can't catch everything, but I would consider them for the following:
+## Do more than just review the diff
 
-*   CSS Code Styles
-*   JavaScript Code Styles
-*   Framework Best Practices
-*   Unit Testing
-*   Performance / e2e Testing
+A thorough review usually means more than reading a diff. Depending on the change, that might mean:
 
-## Encourage Open Communication and Dialogue
+- Pulling the branch down and running a production build locally.
+- Testing the feature in the browser and checking it actually matches what stakeholders expect.
+- Doing some light QA on the feature yourself.
+- Suggesting concrete improvements, not just flagging problems.
+- Thinking through whether this change could ripple elsewhere in the project.
 
-The hierarchical nature of code reviews (reviewer vs reviewee) can inherently stall open communication. The code review format isn't a comfortable platform for clear communication, either. Whereas issues and problems can be easily pinpointed and called out in code, the details may need to be taken offline.
+As the reviewer, your approval is the signal this is ready to merge. Treat it that way.
 
-While having these conversations, it's essential to gauge the following:
+## Use concrete suggestions, not just comments
 
-*   How much time you're spending mentoring, teaching and explaining the issues found in the PR?
-*   The openness of the reviewee. They also have to take the code review process as a learning experience and not get too conscious of the feedback provided.
-*   Actively encourage the challenging of opinion in a way that keeps open dialogue consistent. Less senior team members need to be encouraged to challenge opinions respectfully. This can be done in a 1:1 session or as a team feedback session if the reviewee feels comfortable.
+Feedback lands differently depending on experience level, and a comment that's obvious to a senior engineer can be genuinely confusing to someone more junior.
 
-## Do More Than Review
+I've been on the receiving end of feedback I didn't fully understand, where a concrete example would have saved a lot of back-and-forth. GitHub's Suggested Changes feature exists for exactly this: propose the actual code change alongside the comment. Linking to a relevant doc or article works too, and tends to teach more than a comment alone.
 
-Believe it or not, there is more to code reviews than just reviewing code. A thorough code review means that, as a senior engineer, you take a vested interest in the submitted code. This may include:
+## Pick your battles
 
-Pulling the code down locally and running a production build.
+Some engineers get stuck on things that don't matter much: tabs versus spaces, a variable name, formatting preferences. As a senior reviewer you can override this, but it's worth asking whether it's actually worth the back-and-forth.
 
-*   Testing the feature in the browser, validating the technical approach and ensuring it meets product stakeholder expectations.
-*   Performing some light but meaningful QA on the feature.
-*   Suggesting improvements and providing options for optimising.
-*   Thinking ahead and determining if this feature could have a domino effect across the project.
-*   Be aware of these extra responsibilities. As the reviewing engineer, you give the thumbs up for when this code is merged.
+Prioritize what could cause real damage. Naming and style nitpicks can wait if they don't affect functionality or break lint.
 
-## Use Code Suggestions and Examples
+## Use a review checklist
 
-Often, our understanding of feedback can differ from engineer to engineer. This is mainly due to experience; some senior engineers see things more clearly than others.
+A checklist in the PR description keeps reviews consistent, especially for the parts that are hard to automate. Worth including:
 
-In the past, I've received feedback that I haven't entirely understood or that's made me hopelessly lost. Sometimes the feedback required a subtle refactor or update to logic I did not completely understand.
+- A link to the ticket.
+- A description of the technical approach.
+- Links to designs.
+- Screenshots of the feature.
+- Instructions for testing.
+- A place to confirm functionality or flag open questions.
 
-If a reviewing engineer had provided a clear example of what they wanted to see, I could have been far more efficient in my duties. GitHub has a great feature called Suggested Changes, allowing reviewers to suggest code updates in line with commented feedback.
+Kept up consistently, this becomes a useful record over time, especially when tracking down where a bug actually came from. GitHub's PR templates make this close to automatic once it's set up.
 
-Linking to related examples, educational reading, articles or blog posts can also help achieve positive and sought-after results from reviewees in a way that teaches them and allows them to improve.
+## Bringing it together
 
-## Don't Sweat The Small Stuff
-
-Sometimes, less experienced engineers get stuck on the things that matter the least. Whether that is tabs vs spaces or how to name variables or functions. Some things don't matter as much as others think they do.
-
-As a senior engineer on the project, you have the authority to override this. However, it does become a case of "choosing your battles". It's not efficient nor practical to have back and forth on how a constant has been named.
-
-You need to learn to let certain things go.
-
-This can be dependent on the technologies or frameworks used. As a general rule of thumb, always prioritise the issues that could cause the most damage in the long run. Naming conventions and other callouts can be tackled later if they do not directly affect the functionality or cause code styles to erode on lint.
-
-## Implement a Code Review Check List
-
-A code review checklist is an essential and effective way of ensuring consistency within each PR. Nowadays, many manual tasks are mainly automated through tests, so you know that a particular task succeeds or fails when a PR is created.
-
-For other more abstract items, though, a checklist in the PR description can go a long way. You may want to include the following:
-
-*   A link to the task ticket.
-*   A description of the technical approach or solution.
-*   Links to designs.
-*   Screenshots of the feature.
-*   Instructions on how to test.
-*   A section to confirm functionality, address doubts etc.
-
-If every engineer takes the time to fill in this section consistently, it provides a meaningful database of progress over time. This can be useful when uncovering where a bug originated. In GitHub, you can use PR Templates to implement a pre-defined setup when a PR is created.
-
-## Conclusion
-
-Ensuring more effective code reviews can be a difficult learning curve for senior and junior engineers. Once mastered, engineers can change the direction and output of a team by following simple and tested communication techniques.
-
-Remember to communicate openly, provide direct feedback on the code, not the person, perform thorough reviews beyond "just reviewing code", and leverage automated tooling to save you from searching for remedial mistakes.
+Getting good at code review takes time for senior and junior engineers alike. Done well, it changes how a team ships, not just how clean the code looks. Open communication, feedback aimed at the code rather than the person, review that goes beyond the diff, and automation for everything that doesn't need a human, that's most of it.
