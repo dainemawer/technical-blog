@@ -1,0 +1,258 @@
+---
+title: How to Effectively Set Up NextJS with a Component Library using Monorepos
+dek: >-
+  Learn how to set your next project up for success by effectively configuring
+  Storybook and NextJS within a monorepo archictecture that will scale with your
+  project.
+date: '2023-11-20'
+topics:
+  - javascript
+shortAnswer: >-
+  Learn how to set your next project up for success by effectively configuring
+  Storybook and NextJS within a monorepo archictecture that will scale with your
+  project.
+takeaways: []
+faq: []
+needsRewrite: true
+---
+
+A monorepo is a repository containing multiple related resources managed from an individual repository. Using NPM workspaces, we can build dynamic component libraries that numerous applications can consume, all retained in one version-controlled repository.
+
+## Introduction
+
+Monorepo's have been gaining traction over the years. Having worked with them for over a year in production environments, I can say one thing: _they beat git submodules_!
+
+A typical monorepo will contain multiple packages and projects that are closely related. We can work more efficiently using a monorepo in a way that allows us to move away from:
+
+*   initializing git submodules (a repo within a repo)
+*   linking local packages from other locations on the disk that must be updated and installed.
+
+NPM supports workspaces, which effectively allows for a monorepo structure. You'll need to use NPM v7 and above to set up a workspace.
+
+Recently, I embarked on building a suite of components for a NextJS project. I wanted to ensure that I could actively develop components (facilitated by Storybook) so that my NextJS projects could consume those components.
+
+Historically, NextJS projects have always supported a components folder. However, NextJS restricts this to the application itself. I aim to treat my component library like any other 3rd-party library I'd want to import into my projects. An architecture of this manner is easily achievable using a mono repo.
+
+## Initialise Project Structure
+
+Our first step is to set up a project structure supporting a monorepo. Create a folder where your monorepo can live:
+
+```javascript
+mkdir my-monorepo && cd my-monorepo 
+```
+
+Great. Our next step is to create a package.json file. We can bootstrap one quickly by running the following:
+
+```bash
+npm init -y 
+```
+
+That should produce the following output:
+
+```json
+{ 
+  "name": "my-monorepo", 
+  "version": "1.0.0",
+  "description": "", 
+  "main": "index.js", 
+  "scripts": { 
+    "test": "echo \"Error: no test specified\" && exit 1" 
+  }, 
+  "keywords": [], 
+  "author": "", 
+  "license": "ISC" 
+} 
+```
+
+Let's add some items to our package.json before installing dependencies. We'll need to add a workspaces key. Doing so informs NPM where our projects and packages sit.
+
+NPM comes with a nifty command for adding workspaces; run the below commands and follow the instruction wizard that each command outputs:
+
+```bash
+npm init -w ./packages/component-library 
+npm init -w ./projects/monorepo-site 
+```
+
+Executing the above will run npm install for you as well. At this point, we will see our first fundamental differences between a traditional repo and a monorepo:
+
+A package.json exists in the root and within every "workspace." You may notice that there is only one occurrence of node\_modules and package-lock.json. Now, all workspace dependencies get managed from the root folder.
+
+Next up, we'll look into how to install workspace-specific dependencies.
+
+## Install dependencies
+
+When installing package or project dependencies, we can still leverage npm install - however, this needs to be run from the root folder and requires that we pass a \-w flag to the command. Let's run through installing NextJS.
+
+```bash
+npm install --save next react react-dom -w monorepo-site 
+```
+
+Run the command above from the root of your project folder, where node\_modules and the package-lock.json can be found. The only thing to call out here is that the value passed to \-w must match the name field of one of your project or packages package.json. In this example, the name field of projects/monorepo-site/package.json is monorepo-site.
+
+If all was successful, you should see the dependencies added to projects/monorepo-site/package.json.
+
+```javascript
+"dependencies": { 
+  "next": "^13.0.6", 
+  "react": "^18.2.0", 
+  "react-dom": "^18.2.0" 
+} 
+```
+
+Repeat this process for any necessary dependencies in packages/component-library as well.
+
+## Setup Components and StoryBook
+
+_Please note that this is not a tutorial on how to get set up with Storybook._
+
+Let's take some steps to get Storybook set up correctly. We'll also create a dummy component to verify that our setup works. As StoryBook isn't a dependency of either packages or projects, we can install it in the root of our monorepo:
+
+```bash
+npm install --save-dev @storybook/react @storybook/manager-webpack5 @storybook/builder-webpack5 @storybook/addon-postcss 
+```
+
+Let's also add the build commands to the root monorepo package.json:
+
+```javascript
+"storybook": "start-storybook -p 6006", 
+"build-storybook": "build-storybook" 
+```
+
+Next, we'll need to create the .storybook folder; let's do this and add it to the root of the monorepo. You'll want to add two files to this folder:
+
+main.js is where we configure StoryBook's settings:
+
+```javascript
+module.exports = { 
+  "stories": [ 
+    "../packages/component-library/**/*.stories.jsx", 
+  ],
+  "addons": [ { 
+    name: '@storybook/addon-postcss', 
+    options: { 
+      styleLoaderOptions: {}, 
+      cssLoaderOptions: { 
+        modules: true, 
+        sourceMap: true, 
+        importLoaders: 1, 
+      },
+      postcssLoaderOptions: { 
+        implementation: require('postcss'), 
+      }, 
+    }, 
+  } 
+  ], 
+  "framework": "@storybook/react", 
+  "core": { 
+    "builder": "@storybook/builder-webpack5" 
+  } 
+} 
+```
+
+In our main.js file above - we tell StoryBook where to look for component stories. We also include the @storybook/addon-postcss plugin that supports PostCSS. The extra options you see listed above enabled PostCSS Modules. The last two keys: framework and core, allow us to configure StoryBook to use Webpack v5.
+
+In preview.js, add the following:
+
+```javascript
+export const decorators = [ 
+  (Story, context) => { 
+    return ( 
+      <div style={{ 
+        padding: '1rem', 
+        display: 'flex', 
+        justifyContent: 'center' 
+      }}
+      > 
+        <div>
+          <Story {...context} />
+        </div>
+      </div> 
+    ); 
+  } 
+]; 
+```
+
+The preview.js file allows us to customize the appearance of stories without affecting the component logic itself. Hence, the name "decorator". I've just added some basic styling here to center the button.
+
+Next, we need to flesh out our Button component. In package/component-library, add a new folder called Button; in that folder, add the following files:
+
+You can find the contents of these files in the repo. Great, we need to see if we can import our component into NextJS.
+
+## Setup a NextJS project
+
+We need to return to NextJS quickly to tie everything together meaningfully. First, add a pages folder to the NextJS site and the scripts needed in package.json to build NextJS.
+
+To add the scripts, go to projects/monorepo-site/package.json and replace the current scripts field with:
+
+```javascript
+"scripts": { 
+  "dev": "next dev", 
+  "build": "next build", 
+  "start": "next start", 
+  "lint": "next lint"
+} 
+```
+
+In the pages folder, add an index.js file with the following contents:
+
+```javascript
+const Home = () => { 
+  return ( 
+    <main>
+      <h1>Hello! This is a NextJS + StoryBook Monorepo</h1>
+    </main>
+  );
+} 
+  
+export default Home 
+```
+
+## Add the Component to NextJS
+
+Now, it's time to import our component into NextJS. Let's import the button into projects/monorepo-site/pages/index.js:
+
+```javascript
+import Button from '../../../packages/component-library/Button/Button.jsx' 
+```
+
+When you run npm run dev, you'll likely run into an error. NextJS does not transpile ES6 JavaScript from node\_modules or any other local folder outside its reach.
+
+To get around this problem, configure a property in next.config.js called transpileModules:
+
+```javascript
+export const nextConfig = { transpileModules: ['component-library'] } 
+```
+
+Note that the workspace name, component-library, is passed, not the path to the folder on the disk. You'll need to restart your dev server.
+
+Your custom Button component now lives in NextJS and StoryBook and can be iterated upon and tracked in the repo!
+
+_You may run into trouble with NextJS asking for React v18 if you use NextJS 13. This tutorial was written using NextJS v12 and React v17.0.2_
+
+## Additional Scripts for Convenience
+
+To run our build commands, we'd have to cd into every project or package. Doing so can be time-consuming, so let's add the following scripts to the package.json found in the root:
+
+```javascript
+"scripts": { 
+  "build": "npm run build --workspaces --if-present",
+  "dev:monorepo-site": "npm run dev -w monorepo-site"
+} 
+```
+
+Let's run through these two commands as they differ slightly. Running npm run build in the root will allow us to fire off individual build scripts in all workspaces. If the build task isn't in a package or project package.json, it will simply skip it.
+
+If, at some point, this particular example scaled to have three production sites, all with a build command, we could run npm run build from the root, and for each workspace, the build task will execute. Pretty nifty!
+
+npm run dev:monorepo-site is slightly different - this command targets one workspace and fires off the script defined within that workspace (as long as it exists). Doing so allows us to spin up the dev server for monorepo-site from the root without navigating to the folder.
+
+## Conclusion
+
+Let's review where we're at:
+
+*   We initialized a monorepo structure using workspaces in NPM
+*   Set up a component library and production site with StoryBook and NextJS.
+*   Added scripts that will make our developer experience more accessible to manage.
+*   All our dependencies get managed from the top level, and we do not have to pull in other repos or git submodules.
+
+At this point, we could easily add a new site project or extend our component library. We could also add other packages that may deal with custom server functionality, CMS integrations, or API support. The possibilities are endless. Now it's time for you to try!

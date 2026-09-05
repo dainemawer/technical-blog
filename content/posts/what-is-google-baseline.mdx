@@ -1,0 +1,78 @@
+---
+title: What Is Google Baseline and Its Impact?
+dek: 'Interoperability across browser vendors, explained.'
+date: '2024-04-28'
+topics:
+  - css
+  - performance
+shortAnswer: 'Interoperability across browser vendors, explained.'
+takeaways: []
+faq: []
+needsRewrite: true
+---
+
+For years, web developers of all experience levels have relied on [caniuse.com](http://caniuse.com) to understand the support of a given feature. Reviewing caniuse.com is helpful in determining backward compatibility or which of the modern browsers supports cutting-edge improvements to web specifications.
+
+In 2023, Google introduced [Baseline](https://web.dev/blog/introducing-baseline) to the web community. This tool is not just another addition to the developer's toolkit but a crucial aid in determining the safety of features and APIs for use in production-grade web applications. It’s a platform for interoperability, a much-needed resource to help engineers produce more consistent and efficient experiences, and a testament to Google's commitment to improving web best practices.
+
+## Why Google Baseline?
+
+Browsers are constantly evolving, and vendors release updates monthly. With more individuals contributing and working on specifications than ever before and a far more transparent dialogue between the main browser vendors (Safari, Firefox, Chrome, Edge), it's become increasingly difficult to track which new features are stable across the landscape. However, with the introduction of Baseline, this struggle is significantly alleviated.
+
+Considering the above, as new features are released into browser engines, engineers often need more time to ramp up, refactor, or strategically plan the introduction of new features into their code bases.
+
+More importantly, as Google is often one of the platforms that pushes Frontend technology forward, they self-admittedly accepted that they are partly to blame here. It’s one of the reasons the Chrome team came up with [web.dev](https://web.dev) and [developer.chrome.com](https://developer.chrome.com), as Chrome is often the first browser to land cutting-edge technologies. The introduction of Baseline has also led to further documentation, and conferences focused on interoperability.
+
+New features mean documentation, and Google has made strides to ensure MDN has the relevant documentation for newer technologies as they land in Chrome.
+
+## Closing the Vendor Gap
+
+From Google's perspective, engineers have one significant struggle: _the behaviour and consistency of features across vendors and browser engines_. It’s a pain point for all engineers in the field, requiring complex planning and solutions often to overcome a particular browser engine's lack of support.
+
+The solution here (for the last two years) was [Interop 2022](https://web.dev/blog/interop-2022) and [Interop 2023](https://web.dev/blog/interop-2023) - a conference and community that helps bridge the gap between browsers to provide a more consistent and performant web.
+
+## What is Baseline?
+
+Baseline serves as the universal flag of acceptance across browser vendors. It helps engineers determine what is fully stable across the landscape and across browser vendors for the most recent two versions of each browser. This feature stability assurance is a game-changer in web development, providing a reliable benchmark for engineers to base their decisions on.
+
+## How Does Baseline Work?
+
+You can access Google Baseline on [MDN](https://developer.mozilla.org/), [web.dev](https://web.dev) and [caniuse.com](http://caniuse.com).
+
+Baseline also plans to provide a way to see what has become stable across all browser vendors through a year-on-year approach. For instance, you can read the following article to see what got added to Baseline in 2023: [Baseline 2023](https://web.dev/blog/baseline2023)
+
+As engineering teams, we must keep up with these changes and avoid getting stuck in old solutions for common problems.
+
+Importantly, Baseline has two labels:
+
+Baseline considers the major browser vendors to be:
+
+*   [Safari](https://www.apple.com/safari/) (macOS and iOS)
+*   [Firefox](https://www.mozilla.org/en-US/firefox/new/) (Desktop + Android)
+*   [Chrome](https://www.google.com/chrome/) (Desktop + Android)
+*   [Edge](https://www.microsoft.com/en-us/edge/download?form=MA13FJ) (Desktop)
+
+## Effect on Engineering Teams
+
+One of the most significant benefits of Google Baseline for engineering teams is the removal of guesswork and research required to implement new features. For instance, a Frontend Engineer may want to leverage CSS Grid's new [sub-grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Subgrid) feature. With Baseline, they can quickly and confidently determine its support across major browsers, saving time and effort.
+
+Sub-grid helps engineers define a grid within a grid to have more refined control over layouts. Heading to [caniuse.com](http://caniuse.com) tells us there’s a global usage percentage of **87.42%**—pretty decent, but we still need to ascertain which browser vendors support / don’t support / partially support the feature.
+
+[CanIUse](https://caniuse.com/) now displays a Baseline badge which tells us that this feature is “_Newly available across major browsers_”
+
+Likewise, if you review the documentation for the sub-grid on MDN, you’ll see a similar banner:
+
+Finally, if you review the sub-grid article on [web.dev](https://web.dev/), you’ll see this feature got added to [Baseline in 2023](https://web.dev/blog/baseline2023):
+
+## A Word on Evergreen Browsers
+
+We do not talk enough about this topic, in my opinion. For most modern users, the days of manually updating browsers are gone. Chrome, Firefox, and Edge auto-update automatically. Safari is an outlier in this case. Safari requires a manual update when a new release is sent out from Apple, or when upgrading OS X annually.
+
+Regardless, more users than ever use the latest version of browsers. Although we should ensure the features we build degrade gracefully, this is less of a fundamental consideration nowadays and more of a luxury assumption.
+
+## Useful Links
+
+*   [Google Baseline](https://web.dev/baseline)
+*   [Google Baseline Introduction](https://web.dev/blog/introducing-baseline)
+*   [Baseline 2023](https://web.dev/blog/baseline2023)
+*   [Interop 2022](https://web.dev/blog/interop-2022-wrapup) / [Interop 2023](https://web.dev/blog/interop-2023)

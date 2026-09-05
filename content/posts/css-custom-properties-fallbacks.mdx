@@ -1,0 +1,117 @@
+---
+title: Using CSS Custom Properties with Fallbacks for Efficiency
+dek: 'Less boilerplate, fewer surprises.'
+date: '2024-05-06'
+topics:
+  - css
+  - performance
+shortAnswer: 'Less boilerplate, fewer surprises.'
+takeaways: []
+faq: []
+needsRewrite: true
+---
+
+By now, most of us are accustomed to using CSS Custom Properties on projects. Since its introduction in 2017, CSS Custom Properties, also known as CSS variables, have optimised the code we work with and allowed engineers a finer degree of control when managing values within rules.
+
+CSS Custom Properties can be tricky to deal with and aren’t always as intuitive as one might hope. However, when used right, they can significantly reduce boilerplate code and keep things efficient, making our work more productive.
+
+While the approach below is not perfect, it works well when writing CSS for building projects.
+
+## Why Use CSS Custom Properties
+
+As far as my experience goes, I can only think of three possible reasons to implement a CSS Variable:
+
+*   We want to use a given value in more than one place,
+*   We know that a value will change in the future and want to reduce our efforts for refactoring,
+*   We need to store dynamic values from JS execution.
+
+With this in mind, we can be more assertive about our use cases. Point 3 is less of a concern for this article, but points 1 and 2 are essential. Let's illustrate this using the familiar HTML button element.
+
+## The Infamous Button
+
+Buttons are notoriously tricky to style consistently for such a simple HTML element. Perhaps it’s because they have several different states and applications, regardless - it's usually the first component we Frontend Engineers take on when it comes to a fresh build. Let's have a look at how we could write the style for a button using CSS Custom Properties:
+
+```css
+:root {
+ --color-primary: purple;
+ --color-text: black;
+ --color-text-inverted: white;
+ --color-border: gray;
+}
+
+.button {
+ --button-bg: var(--color-primary);
+ --button-color: var(--color-text-inverted);
+ --button-border: var(--color-border);
+    
+ align-items: center;
+ background-color: var(--button-bg);
+ border: 1px solid var(--button-border);
+ color: var(--button-color);
+ display: inline-flex;
+ line-height: 1;
+}
+```
+
+As far as this example goes, from a technical standpoint, it’s great. It’s clean and straightforward and would get a 👍 from me in a code review. But could we optimise it further? Well, yes.
+
+The var() function in CSS is pretty nifty…we’re used to using it in a somewhat one-dimensional way by just rendering out a value; however, it can be more dynamic. The way to do this is by using a **fallback value**.
+
+If we considered the above example, we could rewrite it like so:
+
+```css
+:root {
+ --color-primary: purple;
+ --color-text: black;
+ --color-text-inverted: white;
+ --color-border: gray;
+}
+
+.button {
+  align-items: center;
+  background-color: var(--button-bg, var(--color-primary));
+  border: 2px solid var(--button-border, var(--color-border));
+  color: var(--button-color, var(--color-text-inverted));
+  cursor: pointer;
+  display: inline-flex;
+  line-height: 1;
+  padding-block: 0.875rem;
+  padding-inline: 1rem;
+}
+```
+
+This is far cleaner and will lead to the same outcomes as the previous example - with less boilerplate code. Overriding it in a variation makes each locally scoped CSS Variable (effectively) optional. We can easily now optionally define the variables defined in .button as separate variations:
+
+```css
+.button:where(.button-secondary) {
+  --button-bg: orange;
+  --button-border: teal;
+}
+
+.button:where(.button-tertiary) {
+  --button-bg: teal;
+  --button-border: orange;
+}
+```
+
+Although this technique is not revolutionary, we care how many lines of compressed text are heading over the wire. The less physical memory a CSS file takes up, the better, which ultimately translates to how many lines of CSS exist. In the first example, we’re looking at almost double the amount of code to achieve the same thing in our optimised example.
+
+This compound effect has an influential impact on performance and further improves readability and developer experience. If you'd like to play around a bit further, feel free to fork the following Code Pen: [https://codepen.io/iamdainemawer/pen/NWmQZMz](https://codepen.io/iamdainemawer/pen/NWmQZMz)
+
+## Support
+
+Since April 2017, according to [Google Baseline](https://web.dev/blog/introducing-baseline), this feature is well-supported across all major browsers. If you're interested to learn more about Baseline, read my post about [Google Baseline and Its Impact](https://dainemawer.com/articles/what-is-google-baseline-and-its-impactbacks-for-efficiency)
+
+You can check for browser support by adding the following statement to your CSS stylesheets:
+
+```css
+@supports(--css: variable) {}
+```
+
+*   [Can I Use - CSS Nesting](https://caniuse.com/?search=CSS%20Custom%20Prop)
+*   [CSS Specification - CSS Nesting Module](https://w3c.github.io/csswg-drafts/css-nesting/)
+
+## Resources
+
+*   [MDN - CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
+*   [CSS Variables Polyfill](https://github.com/aaronbarker/css-variables-polyfill)

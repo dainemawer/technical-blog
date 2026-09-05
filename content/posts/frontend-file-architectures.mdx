@@ -1,0 +1,193 @@
+---
+title: Five Front-end File Architectures For Better Code Organisation
+dek: >-
+  Explore the different front-end file architectures available to you, including
+  flat, hierarchical, modular, component-based, and feature-based. Consider the
+  size, complexity, and needs of your team when choosing the best file
+  architecture for your project. Find out which approach works best for your
+  project to better organize and maintain your code.
+date: '2023-01-18'
+topics:
+  - javascript
+shortAnswer: >-
+  Explore the different front-end file architectures available to you, including
+  flat, hierarchical, modular, component-based, and feature-based. Consider the
+  size, complexity, and needs of your team when choosing the best file
+  architecture for your project. Find out which approach works best for your
+  project to better organize and maintain your code.
+takeaways: []
+faq: []
+needsRewrite: true
+---
+
+## Introduction
+
+Choosing the most appropriate file architecture can set you up for massive success when building scalable front-ends. There are a variety of approaches to file architectures, each with its pros and cons. In this article, I will discuss the benefits and trade-offs of 5 common front-end file architectures to help you decide how to scale your next project.
+
+## Flat Architecture
+
+```text
+|- index.html 
+|- style.css 
+|- analytics.js 
+|- about.html 
+|- modernizer.js 
+```
+
+Opting for the flat-file architecture is by far the most straightforward approach. This architecture dictates that all your files are stored in a single directory. This architecture works well on micro to small projects, but as the project scales, the number of files and file types tend to grow out of control.
+
+As no hierarchy is explicitly set, the cognitive load on collaborators can cause frustration and lead to uncontrolled and wild additions to the project which do not follow rhyme or reason.
+
+**Benefits of the _Flat Architecture_**
+
+*   Quick and simple to get started.
+*   Can easily be hosted on GitHub Pages or Amazon S3.
+*   Easy version control.
+*   Virtually no overhead to understanding the semantics of the architecture.
+
+**Downfalls of the _Flat Architecture_**
+
+*   Scalability becomes seriously limited.
+*   Multiple file types exist in an unordered and disorganised fashion.
+*   Has the potential to lead to developer overhead in trying to determine where functionality exists.
+
+## Hierarchical Architecture
+
+```text
+|- css/ 
+|- javascript/ 
+|- assets/ 
+|- images/ 
+|- fonts/ 
+|- index.html 
+```
+
+In a hierarchical file architecture, a project is organised into multiple directories. This allows engineers to manage code better and makes it easier to determine where specific functionality is stored within the project. Generally, directories include:
+
+*   CSS
+*   JavaScript
+*   Assets (Images, Fonts etc.)
+
+Each folder can then be further broken down into more semantic folder structures. For instance, within your CSS folder, you may have a folder structure that looks something like this:
+
+```text
+|- css/ 
+  |- base/ 
+  |- components/ 
+  |- typography/ 
+```
+
+**Benefits of the _Hierarchical Architecture_**
+
+*   Added scalability when compared to the _Flat Architecture._
+*   Better organisational semantics.
+*   Less developer overhead as file types are generally grouped.
+*   Logical and predictable organisation.
+
+**Downfalls of the _Hierarchical Architecture_**
+
+*   This architecture can be more complex.
+*   It can be opinionated - there's no "right" way to do it.
+*   It can be slower at scale as servers may need to traverse multiple folder hierarchies.
+
+## Modular Architecture
+
+```text
+|- index.html 
+|- modules 
+  |- ExampleModule 
+    |- components 
+    |- tests 
+    |- helpers 
+    |- mocks 
+    |- services 
+    |- types 
+```
+
+Using a Modular architecture allows engineers to self-contain functionality. Each module folder contains everything about or relating to that module - from components to type declarations. Engineers can then easily update multi-dimensional aspects of a particular module, improving the developer experience and allowing for faster iterations as all functionality remains closely placed and organised.
+
+Another benefit of the modular architecture is that it provides a high-level overview of a site's functionality; this allows developers to understand the project's scope and reduces cognitive load.
+
+**Benefits of the Modular Architecture**
+
+*   This architecture allows for reusable components.
+*   It can scale with ease as additional modules seemingly fit into place.
+*   Easier to test and maintain over the long term.
+*   More opportunities to use code splitting.
+
+**Downfalls of the Modular Architecture**
+
+*   This architecture can become complex.
+*   It generally has a dependency on a build tool or task manager.
+*   Heavily relies on developers maintaining components in a standardised way.
+*   Comes with a slightly higher learning curve.
+
+## Component-based Architecture
+
+```text
+|- src 
+  |- components 
+    |- Header 
+    |- index.jsx 
+    |- Header.module.css 
+```
+
+One of the more common and well-known architectures, the Component-based architecture, will be familiar if you've spent time building React-based applications. This architecture intends to ensure complete usability.
+
+The architecture allows for scalable, individual components and provides an excellent platform for more complex features that consume smaller pieces within the architecture. This architecture works best with frameworks like React or Vue that leverage a component-based methodology.
+
+**Benefits of the Component-based Architecture**
+
+*   Reusability is front and centre.
+*   More efficient maintenance and development efforts.
+*   Easy to test.
+*   Better performance overall due to code splitting and the potential to load components dynamically.
+*   Clear developer experience that can quickly be adopted.
+
+**Downfalls of the Component-based Architecture**
+
+*   The component-based architecture can be complex, especially when using a build tool like Webpack.
+*   It comes with a relatively high learning curve for engineers.
+*   The architecture can lead to over-engineering at times.
+*   Navigating the code base can become complicated because multiple smaller files contain less functionality.
+
+## Feature-based Architecture
+
+```text
+|- src 
+  |- features 
+    |- blog 
+    |- shop 
+    |- cart 
+    |- components 
+    |- pages 
+    |- services 
+```
+
+The featured-based architecture organises a code base by features rather than file types or components. This can make it easier for engineers to understand how project functionality fits together.
+
+Generally, features are split into directories containing all the functionality required to implement and execute that feature. As you can see in the example above, large pieces of functionality, i.e. blog, shop, cart, are contained within their directories, and all related functionality is contained within further sub-directories.
+
+This architecture works well if the project management of the site is centred around delivering significant and specific features.
+
+This architecture is still used today by more monolith-like frameworks such as Laravel and WordPress. It allows for easy organisation and an orientating developer experience.
+
+**Benefits of the _Feature-based Architecture_**
+
+*   Easy organisation, as features and related functionality exist in one easy-to-find place.
+*   Features can easily be added and removed.
+*   Easy to add tests and maintain over the long term.
+*   Provides for a better developer experience.
+*   Isolation of components ensures that functionality is safeguarded.
+
+**Downfalls of the _Feature-based Architecture_**
+
+*   It can be a steep learning curve for onboarding developers.
+*   Requires a standardised approach to programming design patterns.
+*   Over-engineering is a potential concern.
+*   Code can overlap at times, especially if certain functionality is shared.
+*   This can lead to lots of smaller files needing more functionality.
+
+## Conclusion
+
+Choosing a file architecture for your project is by no means a simple process. Always put scalability first when it comes to making such a decision. It is also essential to consider developer experience, how often features will be developed and extended, and how easy it is to add and remove elements. Also, different tech stacks may have a preferred architecture - for instance, a best practice file architecture for a React-based project may differ from WordPress-based project.

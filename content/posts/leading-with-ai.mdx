@@ -1,0 +1,88 @@
+---
+title: 'Leading With AI: What Helped Me Through the Hard Parts'
+dek: How I used AI through the Monocle.com rebuild.
+date: '2025-10-05'
+topics:
+  - engineering-management
+shortAnswer: How I used AI through the Monocle.com rebuild.
+takeaways: []
+faq: []
+needsRewrite: true
+---
+
+_Real moments, practical lessons, and quiet wins from leading the Monocle.com rebuild._
+
+The new [Monocle.com](https://monocle.com) site recently launched — the result of a long journey filled with highs and lows, frustrations and wins, across every discipline. It stands out as one of the most challenging projects I’ve worked on at [10up](https://10up.com) — not just because of its technical complexity and integrations, but also in how we worked together as a team. The process, the resourcing, and especially the surge in conversation around AI made it a unique experience.
+
+I’ve always been fairly pro-AI. I don’t see it as a threat to my role — I see it as a tireless teammate that helps me work smarter, move faster, and be more effective. In this post, I want to share how I used AI throughout the Monocle project — not just in engineering, but in areas that go beyond code.
+
+Here are five ways I leaned on AI to bridge gaps, accelerate progress, and stay steady under pressure — with real examples to show that, when used thoughtfully, AI really can make us better at what we do.
+
+## **Gut-Checking Technical Decisions**
+
+One of the hardest parts of leading a team is making decisions in the face of ambiguity — and doing it quickly. I used AI as a sounding board to validate my thinking when navigating unfamiliar patterns, edge cases, or murky technical decisions. It gave me a “second brain” to bounce ideas off, which helped reduce decision fatigue and let me move forward with more confidence.
+
+It wasn’t just about getting the right answer — it was about reducing the emotional weight of needing to constantly interrupt others for validation. We’ve all had those moments where you want to ask a Web Engineer, “Hey, does this make sense?” but you hold back — not wanting to slow them down or feel like you’re adding pressure. AI helped me bridge that gap. It offered an initial gut check, so that by the time I did ask a teammate for input, I’d already sharpened my thinking and felt more prepared for the conversation.
+
+**Experience:**
+
+During the Monocle build, we integrated a relatively new headless eCommerce platform called Swell. It needed to communicate with Piano to handle user authentication — and on the frontend, we were layering Alpine.js for reactivity. I had a solid grasp of Alpine’s model, but the orchestration between Swell and Piano wasn’t immediately clear.  
+Before jumping into a call or writing up a bunch of questions, I used AI to gather more context on both systems — their tech stacks, how their APIs worked, even the general approach their teams seemed to favor. Then I prompted AI to generate a minimal but robust example of how the two platforms could integrate. That context helped me mentally map the interaction and move forward with clarity.
+
+## **Rapid MVPs Without Burnout**
+
+On high-pressure projects like Monocle, you don’t always have the luxury of time — especially when spinning up new features to help drive decisions or unblock other teams.
+
+Rather than burn hours on something that might change completely after one stakeholder review, I started using AI to help scaffold MVPs. I’d describe what I needed — a “Saved Views” panel, a reactive dropdown filter, a basic TypeScript schema — and it would return a clean starting point I could tweak and wire up quickly.
+
+This wasn’t about cutting corners. It was about preserving energy for the parts that required deeper thinking or polish — while keeping the project moving forward.  
+
+**Experience:**
+
+The team requested a custom ad unit inspired by Wimbledon’s Rolex sponsorship — specifically, a live “ticking” clock face synced to the user’s local timezone. After inspecting the Rolex example, I realized how complex this could be: real-time sync, time zone logic, animation performance, accessibility… the list went on.
+
+With AI, I quickly broke the feature down, explored animation strategies, and generated a working MVP. It helped us estimate more accurately and kept pressure off me — while still delivering something high-impact.
+
+## **Faster Debugging with AI**
+
+We’ve all had those bugs — subtle, persistent, and completely undocumented. The kind where you open ten tabs, hoping one StackOverflow post from 2013 holds the key.
+
+AI changed how I approached debugging. I could describe the issue, paste a snippet, and quickly get back pointed analysis or even an overlooked edge case. It saved time, but more importantly, it helped me understand _why_ things were breaking faster — and that’s what really counts.
+
+**Experience:**
+
+Monocle requested a horizontally scrollable component — a pattern I’ve grown to dread on the web. Unlike mobile apps, the browser ecosystem is full of quirks that break even the cleanest sliders.
+
+I built a CSS-only solution enhanced with JS for accessibility. It worked well — until bugs popped up on Safari. Rather than dive down the rabbit hole, I asked AI to help diagnose it. Within minutes, it pointed me toward a known 100vw issue with Safari rendering. That call saved me hours of trial and error.
+
+## **Stepping into Backend Territory**
+
+Frontend engineers usually translate data into UI. But on Monocle, that line blurred. With backend engineers stretched thin, I often stepped in — writing PHP, digging into unfamiliar parts of the theme, and doing my best to help without slowing anyone down.
+
+AI became a kind of guide — helping me understand Fueled’s backend conventions, structure logic correctly, and write clean code that wouldn’t need a ton of rewriting.
+
+**Experience:**
+
+There were a few weeks where I stepped up, not as a Backend Engineer, but as a Frontend Engineer willing to help. I’ve worked with PHP and WordPress APIs for years, but Fueled’s PHP standards keep evolving — every project more abstracted, more refined.
+
+I wanted to contribute meaningfully. So I asked AI to walk me through Fueled’s best practices and assist with a small feature I was building alongside Konstantinos. I was nervous about the PR — but it passed without a hitch. It was a small win, but a powerful reminder that with the right support, we can stretch into unfamiliar territory and still deliver quality work.
+
+## **Clearer Communication Under Pressure**
+
+Leading through a long, demanding project carries emotional weight. And sometimes, that stress creeps into how we show up in Slack, code reviews, or project updates. I didn’t want that — not for myself, and not for the team.
+
+So I started using AI to gut-check my messages. I’d write them raw, then ask AI to help me refine them — make them calmer, clearer, and less reactive. Not fake. Just… clearer. It became a small but powerful practice.
+
+**Experience:**
+
+This might be a contentious point, but relationships are complex. Communication is hard. And when the pressure’s high — the team is tired, clients are shifting goalposts — you sometimes just need a little help.
+
+It wasn’t support I lacked (shoutout to Gabe, Lily, and Brent) — it was clarity. AI helped me take a breath, tighten my language, and avoid letting frustration seep into the way I communicated. I tend to ramble when I’m stressed. AI helped me strip away the noise and get to the point. I even learned a few new ways to say difficult things… more kindly.
+
+## **Final Thoughts**
+
+Looking back, I didn’t use AI to replace my skills — I used it to reinforce them. It helped me move faster when time was tight, get unstuck when problems were murky, and communicate more clearly when the pressure was on.
+
+What surprised me most wasn’t the technical insight — it was the quiet confidence it gave me. Whether it was gut-checking a feature, scaffolding a tough integration, or rewriting a message, AI became a silent partner in the background — helping me lead more effectively.
+
+This wasn’t about shortcuts. It was about showing up better — and getting the job done well.

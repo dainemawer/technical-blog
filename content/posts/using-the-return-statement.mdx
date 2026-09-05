@@ -1,0 +1,120 @@
+---
+title: 4 Tips for Properly Using the Return Statement in Your Code
+dek: >-
+  Learn how to use the return statement effectively in your code with these 5
+  tips. Proper use of the return statement is crucial for ensuring the correct
+  functioning of your programs and can save you from bugs and errors.
+date: '2023-02-13'
+topics:
+  - javascript
+shortAnswer: >-
+  Learn how to use the return statement effectively in your code with these 5
+  tips. Proper use of the return statement is crucial for ensuring the correct
+  functioning of your programs and can save you from bugs and errors.
+takeaways: []
+faq: []
+needsRewrite: true
+---
+
+The return statement is an often overlooked programming paradigm. It allows you to specify a value to be returned by a function and signals the end of its execution. Using this statement properly can ensure your code runs smoothly and may prevent unexpected bugs. Here are five tips for using the return statement effectively:
+
+## 1\. Use the return statement to end a function or method
+
+The return statement signals the end of a function or method. When the return statement is encountered, the function immediately terminates:
+
+```javascript
+function sayMyName(name) { 
+  console.log(name); return; // end the function 
+} 
+```
+
+It's worthwhile noting that the return statement is affected by ASI [Automatic Semicolon Insertion](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#automatic_semicolon_insertion). This means that you cannot create a new line after the return statement is called:
+
+```javascript
+/* Incorrect - would return nothing and flag an error. */ 
+return; name; 
+
+/* Correct - would return the value of name. */ 
+return ( name; ); 
+```
+
+## 2\. Return a value of the correct data type
+
+When using the return statement, make sure to return the correct data type of the intended value. If you fail to return the correct data type, your program will behave unexpectedly and may result in errors. This is due to a feature of JavaScript known as [Type Coercion](https://developer.mozilla.org/en-US/docs/Glossary/Type_coercion).
+
+Look out for my articles on Using TypeScript and Getting Started with JavaScript Unit Testing to learn more about how to work around this pitfall confidently.
+
+```javascript
+function add(a, b) { 
+  return a + b; // correct - returns a number 
+} 
+
+function subtract(a, b) { 
+  return a - b; // correct - returns a number 
+} 
+                         
+function multiply(a, b) { 
+  return `${a} times ${b} is equal to: ${a * b}`; // incorrect - returns a string 
+} 
+```
+
+## 3\. Return a value that is appropriate for the function
+
+When writing functions, it is essential to consider what information you need from your data and how it can affect your code. For example, if your function needs to calculate the average of a list of numbers, returning the sum of those numbers would not be correct.
+
+Make sure you carefully consider what information you need when writing functions and how it can affect your code.
+
+```javascript
+function average(numbers) { 
+  let total = 0; 
+  for (let number of numbers) { 
+    total += number; 
+  } 
+  
+  return total; // incorrect - returns the sum of the numbers, not the average 
+} 
+
+function average(numbers) { 
+  let total = 0; 
+  for (let number of numbers) { 
+    total += number; 
+  } 
+  
+  return total / numbers.length; // correct - returns the average of the numbers 
+} 
+```
+
+When writing a function, it's important to be intentional about the following:
+
+## 4\. Use multiple return statements if necessary
+
+Sometimes, you may want to return a value immediately if certain conditions are met. This would apply to using if statements, as well as switch statements.
+
+```javascript
+function options(option) { 
+  switch (option) { 
+    case "DnD": 
+      return "do-not-disturb"; 
+    case "Silent": 
+      return "silent-mode"; 
+    default: 
+      return "no-option-selected"; 
+  } 
+}
+
+function getOptions(option) { 
+  if (option === "DnD") { 
+    return "do-not-disturb"; 
+  } 
+  
+  return option; 
+} 
+```
+
+In the options function above, we can omit the break keyword, along with a temporary variable to store the value if we explicitly return within a case - this makes code more readable and saves memory.
+
+In the getOptions function, we can also always ensure that we return a value regardless of whether a condition is met. If the condition is true, it will execute the return statement within the if - if not, it simply ignores that statement and returns the value of option
+
+By following these tips, you can use the return statement effectively and ensure that your code runs smoothly and correctly. Proper use of the return statement is an essential part of good programming practice, and taking the time to get it right can save you a lot of headaches in the long run.
+
+You can [read more about the return statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return) on MDN.
