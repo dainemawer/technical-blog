@@ -2,7 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Figtree, JetBrains_Mono } from "next/font/google";
 import { CommandPaletteProvider } from "@/components/command-palette-context";
 import { CommandPaletteMount } from "@/components/command-palette-mount";
-import { InertWhenPaletteOpen } from "@/components/inert-when-palette-open";
+import { InertWhenModalOpen } from "@/components/inert-when-modal-open";
+import { SubscribeModalProvider } from "@/components/subscribe-modal-context";
+import { SubscribeModalMount } from "@/components/subscribe-modal-mount";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -45,8 +47,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <CommandPaletteProvider>
-          <InertWhenPaletteOpen>{children}</InertWhenPaletteOpen>
-          <CommandPaletteMount />
+          <SubscribeModalProvider>
+            <InertWhenModalOpen>{children}</InertWhenModalOpen>
+            <CommandPaletteMount />
+            <SubscribeModalMount />
+          </SubscribeModalProvider>
         </CommandPaletteProvider>
       </body>
     </html>
