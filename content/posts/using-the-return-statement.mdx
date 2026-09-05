@@ -1,120 +1,123 @@
 ---
-title: 4 Tips for Properly Using the Return Statement in Your Code
-dek: >-
-  Learn how to use the return statement effectively in your code with these 5
-  tips. Proper use of the return statement is crucial for ensuring the correct
-  functioning of your programs and can save you from bugs and errors.
+title: 4 Tips for Properly Using the Return Statement in JavaScript
+dek: A few rules that keep return statements from causing quiet bugs.
 date: '2023-02-13'
 topics:
   - javascript
-shortAnswer: >-
-  Learn how to use the return statement effectively in your code with these 5
-  tips. Proper use of the return statement is crucial for ensuring the correct
-  functioning of your programs and can save you from bugs and errors.
-takeaways: []
-faq: []
-needsRewrite: true
+shortAnswer: Four rules make return statements more reliable. End a function explicitly rather than relying on an implicit undefined, return the type your caller actually expects, return the value your function's name promises rather than whatever's in scope, and use multiple return statements for early exits instead of nesting conditionals.
+takeaways:
+  - A bare `return;` on its own line ends a function immediately and returns `undefined`. That's often accidental, not intentional.
+  - "JavaScript's automatic semicolon insertion breaks a `return` followed by a value on the next line. Keep the value on the same line as `return`, or open a parenthesis on the `return` line."
+  - Returning the wrong data type, a string where a number is expected, is a common source of bugs that only show up later, once type coercion has already papered over it.
+  - A function should return what its name promises. `average()` should return an average, not the running sum used to calculate it.
+  - Multiple return statements for early exits, in a switch or an if block, are fine, and often more readable than one variable reassigned throughout.
+faq:
+  - question: Why does my return statement return undefined on the next line?
+    answer: "JavaScript's automatic semicolon insertion (ASI) treats return on its own line as a complete statement, so anything after the line break gets ignored. Keep the return value on the same line as return, or open a parenthesis on the return line and close it after the value."
+  - question: Is it bad practice to use multiple return statements in one function?
+    answer: No. Returning early from a switch case or an if block is often clearer than nesting conditionals or tracking a variable through the whole function.
+  - question: What's a common mistake with return statement types?
+    answer: Returning a different data type than the caller expects, like a template string instead of a number. JavaScript's type coercion often lets that slide silently until it breaks something else entirely.
+needsRewrite: false
 ---
 
-The return statement is an often overlooked programming paradigm. It allows you to specify a value to be returned by a function and signals the end of its execution. Using this statement properly can ensure your code runs smoothly and may prevent unexpected bugs. Here are five tips for using the return statement effectively:
+The return statement doesn't get much attention, but it's easy to get subtly wrong. It specifies the value a function hands back to its caller and marks the end of that function's execution. Get it wrong and your code can still run without erroring, just not the way you expect. Here are four things worth knowing.
 
-## 1\. Use the return statement to end a function or method
+## 1. Use return to end a function or method
 
-The return statement signals the end of a function or method. When the return statement is encountered, the function immediately terminates:
+Return signals the end of a function. The moment it's hit, the function stops:
 
 ```javascript
-function sayMyName(name) { 
-  console.log(name); return; // end the function 
-} 
+function sayMyName(name) {
+  console.log(name);
+  return; // ends the function, returns undefined
+}
 ```
 
-It's worthwhile noting that the return statement is affected by ASI [Automatic Semicolon Insertion](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#automatic_semicolon_insertion). This means that you cannot create a new line after the return statement is called:
+Worth knowing: return is affected by automatic semicolon insertion (ASI). You can't put the value on the next line and expect it to come along:
 
 ```javascript
-/* Incorrect - would return nothing and flag an error. */ 
-return; name; 
+// Wrong. ASI inserts a semicolon after return, so this returns
+// undefined and never touches `name`.
+return
+  name;
 
-/* Correct - would return the value of name. */ 
-return ( name; ); 
+// Right. The parenthesis stays open across the line break, so
+// ASI doesn't insert anything.
+return (
+  name
+);
 ```
 
-## 2\. Return a value of the correct data type
+## 2. Return the correct data type
 
-When using the return statement, make sure to return the correct data type of the intended value. If you fail to return the correct data type, your program will behave unexpectedly and may result in errors. This is due to a feature of JavaScript known as [Type Coercion](https://developer.mozilla.org/en-US/docs/Glossary/Type_coercion).
-
-Look out for my articles on Using TypeScript and Getting Started with JavaScript Unit Testing to learn more about how to work around this pitfall confidently.
+Return the type your caller actually expects. Get this wrong and your program will still run, just not correctly, thanks to JavaScript's [type coercion](https://developer.mozilla.org/en-US/docs/Glossary/Type_coercion) quietly patching over the mismatch until it eventually causes a real bug somewhere downstream.
 
 ```javascript
-function add(a, b) { 
-  return a + b; // correct - returns a number 
-} 
-
-function subtract(a, b) { 
-  return a - b; // correct - returns a number 
-} 
-                         
-function multiply(a, b) { 
-  return `${a} times ${b} is equal to: ${a * b}`; // incorrect - returns a string 
-} 
-```
-
-## 3\. Return a value that is appropriate for the function
-
-When writing functions, it is essential to consider what information you need from your data and how it can affect your code. For example, if your function needs to calculate the average of a list of numbers, returning the sum of those numbers would not be correct.
-
-Make sure you carefully consider what information you need when writing functions and how it can affect your code.
-
-```javascript
-function average(numbers) { 
-  let total = 0; 
-  for (let number of numbers) { 
-    total += number; 
-  } 
-  
-  return total; // incorrect - returns the sum of the numbers, not the average 
-} 
-
-function average(numbers) { 
-  let total = 0; 
-  for (let number of numbers) { 
-    total += number; 
-  } 
-  
-  return total / numbers.length; // correct - returns the average of the numbers 
-} 
-```
-
-When writing a function, it's important to be intentional about the following:
-
-## 4\. Use multiple return statements if necessary
-
-Sometimes, you may want to return a value immediately if certain conditions are met. This would apply to using if statements, as well as switch statements.
-
-```javascript
-function options(option) { 
-  switch (option) { 
-    case "DnD": 
-      return "do-not-disturb"; 
-    case "Silent": 
-      return "silent-mode"; 
-    default: 
-      return "no-option-selected"; 
-  } 
+function add(a, b) {
+  return a + b; // correct, returns a number
 }
 
-function getOptions(option) { 
-  if (option === "DnD") { 
-    return "do-not-disturb"; 
-  } 
-  
-  return option; 
-} 
+function subtract(a, b) {
+  return a - b; // correct, returns a number
+}
+
+function multiply(a, b) {
+  return `${a} times ${b} is equal to: ${a * b}`; // wrong, returns a string
+}
 ```
 
-In the options function above, we can omit the break keyword, along with a temporary variable to store the value if we explicitly return within a case - this makes code more readable and saves memory.
+## 3. Return a value that's appropriate for the function
 
-In the getOptions function, we can also always ensure that we return a value regardless of whether a condition is met. If the condition is true, it will execute the return statement within the if - if not, it simply ignores that statement and returns the value of option
+Think about what your function's name actually promises, and return that, not just whatever happens to be in scope. If a function is meant to calculate an average, returning the sum isn't correct, even though the sum is right there.
 
-By following these tips, you can use the return statement effectively and ensure that your code runs smoothly and correctly. Proper use of the return statement is an essential part of good programming practice, and taking the time to get it right can save you a lot of headaches in the long run.
+```javascript
+function average(numbers) {
+  let total = 0;
+  for (let number of numbers) {
+    total += number;
+  }
 
-You can [read more about the return statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return) on MDN.
+  return total; // wrong, this is the sum, not the average
+}
+
+function average(numbers) {
+  let total = 0;
+  for (let number of numbers) {
+    total += number;
+  }
+
+  return total / numbers.length; // correct
+}
+```
+
+## 4. Use multiple return statements if it helps
+
+Sometimes you want to return immediately once a condition is met, whether that's inside an if statement or a switch.
+
+```javascript
+function options(option) {
+  switch (option) {
+    case "DnD":
+      return "do-not-disturb";
+    case "Silent":
+      return "silent-mode";
+    default:
+      return "no-option-selected";
+  }
+}
+
+function getOptions(option) {
+  if (option === "DnD") {
+    return "do-not-disturb";
+  }
+
+  return option;
+}
+```
+
+In `options`, returning directly inside each case means no `break` keyword and no temporary variable to hold the value. It reads better and uses less memory.
+
+In `getOptions`, you always get a value back regardless of which branch runs: the return inside the `if` fires when the condition is true, and otherwise the function falls through to the final `return option`.
+
+None of this is complicated, but getting it wrong tends to produce bugs that only show up later, once something downstream trips over a value that isn't what it expected. [Read more about the return statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return) on MDN.

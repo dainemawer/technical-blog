@@ -4,81 +4,88 @@ dek: Leveraging its insights to optimise performance.
 date: '2023-11-27'
 topics:
   - performance
-shortAnswer: Leveraging its insights to optimise performance.
-takeaways: []
-faq: []
-needsRewrite: true
+shortAnswer: Chrome DevTools' Coverage panel (More tools → Coverage) shows exactly which loaded CSS and JavaScript never actually runs on the page, colour-coded red for unused and green for used, with a byte count and percentage per file. Use it to find what's safe to remove, split, or defer instead of guessing at bundle bloat.
+takeaways:
+  - Code coverage for CSS means what percentage of CSSOM nodes actually match something in the DOM. For JS it means what percentage of functions actually get called.
+  - PurgeCSS, the tool under Tailwind's hood, handles most CSS coverage problems on its own and works outside Tailwind too.
+  - Route-based code splitting, tree shaking, and import-on-interaction are the practical JS wins. Most of the gain comes from planning, not clever code.
+  - Third-party scripts and large frameworks are the two things better code alone can't fix. Your only real levers there are removing, retaining, or deferring them.
+  - 100% coverage isn't a realistic target. A complex site with real functionality will always carry some code it only needs occasionally.
+faq:
+  - question: What's the difference between code coverage for CSS and JavaScript?
+    answer: CSS coverage measures how much of the CSSOM actually matches a node in the DOM. JavaScript coverage measures how much of your JS functionality actually gets executed. Chrome's Coverage panel reports both separately, per file.
+  - question: How do I open Chrome's Coverage panel?
+    answer: Open DevTools, go to the overflow menu ("More tools"), and select Coverage. Reload the page with the panel open to capture coverage from page load, or use the record button to capture coverage for an interaction without reloading.
+  - question: Can I get to 100% code coverage?
+    answer: Realistically, no. Third-party scripts and full-featured frameworks carry code you can't selectively remove, and a complex site will always execute some functionality only occasionally. Aim for reducing clear waste, not a perfect score.
+needsRewrite: false
 ---
 
-When we work on complex projects, JavaScript and CSS often get the jump on us. Before we know it, thousands, if not tens of thousands, of bytes are being transferred and executed in the browser - most of which we do not need to load
+When a project gets complex, JavaScript and CSS get away from you fast. Before you know it, thousands, sometimes tens of thousands, of bytes are being transferred and executed in the browser, and most of it isn't even needed.
 
-## What is Code Coverage?
+## What is code coverage?
 
-Code coverage derives from a computer science concept called "test coverage". From Wikipedia:
+Code coverage comes from an older computer science concept called test coverage. From Wikipedia:
 
 > Test coverage is a percentage measure of the degree to which the source code of a program is executed when a particular test suite is run.
 
-A program with high test coverage means that more or all of its source code gets executed during unit testing, implying that the code base would have a lower chance of undiscovered bugs.
+High test coverage means most or all of a codebase runs during unit testing, which implies fewer undiscovered bugs.
 
-Code Coverage is different when it comes to JavaScript and CSS. Of course, you can still write unit tests for JavaScript, but within the context of the browser environment, JavaScript and CSS coverage mean the following:
+Coverage works a bit differently for CSS and JavaScript in the browser. You can still write unit tests for JavaScript, but in a browser context, coverage means something more specific:
 
-*   CSS: what percentage of CSS gets utilised when it loads into the browser? More precisely, what percentage of nodes from the CSSOM get matched to nodes in the DOM?
-*   JavaScript: what percentage of JavaScript functionality is executed by the browser?
+- **CSS:** what percentage of CSS actually gets used once it loads? More precisely, what percentage of CSSOM nodes match a node in the DOM?
+- **JavaScript:** what percentage of the loaded JavaScript actually executes?
 
-If we determine just how much of the referenced JavaScript and CSS assets are utilised by the browser, we can refactor or reimplement files to be more conscious of what they try to achieve on the page. If we only load the JavaScript and CSS required for the page, this reduces bundle sizes, transfer sizes and overall Paint time, leading to a great user experience.
+Once you know how much of your referenced JS and CSS is actually used, you can refactor or reimplement files with that in mind. Load only what a page needs, and bundle size, transfer size, and paint time all drop with it.
 
-## Auditing Code Coverage in Chrome
+## Auditing code coverage in Chrome
 
-Many Chrome users must be aware of the Code Coverage panel in DevTools. To view it, open DevTools, go to the context menu, click "More tools", and select "Coverage".
+Most Chrome users have never opened the Coverage panel in DevTools. To find it: open DevTools, go to the overflow menu, click "More tools," and select "Coverage."
 
-When the panel opens, you have two options:
+Once it's open, you can either reload the page to capture coverage from load, or hit record to capture coverage for whatever you do next without reloading.
 
-After each audit, the panel will list all JavaScript and CSS-loaded resources. Clicking on a line item will display the source code with a vertical bar down the left. Sections of the bar will be coloured green or red.
+After a capture, the panel lists every JavaScript and CSS resource that loaded. Click a line item and you'll see the source with a vertical bar down the left, coloured green or red. Red means the code loaded but never ran. Each line item also shows total unused bytes and a percentage.
 
-Code blocks will be highlighted in red or green when reviewing the Sources panel for each request. Any code block highlighted in red is code that got loaded but not executed by the browser. The line item will also summarise the Total Unused Bytes and a percentage measure of unused code.
+## How to handle poor code coverage
 
-## How to handle poor Code Coverage
+Fixing poor coverage is genuinely hard, and it can push you toward a full refactor. I grimace at that word, so let's start with some easier wins first.
 
-Handling poor Code Coverage can be a challenge. It's hard work and may lead you down a path of a complete refactor. I grimace at the word "refactor", so let's chat about some higher-level wins first.
+## CSS wins
 
-## CSS Wins
+A few tools already do a solid job of getting CSS coverage close to 100%. PurgeCSS, the tool Tailwind uses under the hood, strips unused styles well, and you can drop it into any stack, not just a Tailwind one.
 
-Several tools are doing an excellent job of ensuring 100% CSS Code Coverage. PurgeCSS (leveraged by Tailwind) does a great job of removing unused CSS styles. You can implement PurgeCSS into any tech stack, so you are not married to Tailwind if you're not a fan.
+Even WordPress Gutenberg shipped a filter that only loads block-library CSS when a block is actually on the page.
 
-Even WordPress Gutenberg released a nifty filter for only loading Block Library CSS when a block is on the page.
+Modern CSS approaches help here too. CSS Modules, Vanilla Extract, and Linaria can all cut down the impact of unused CSS in a React codebase.
 
-Using more modern CSS approaches can yield incredible results in the React space. You can leverage CSS Modules, Vanilla Extract and Linaria to help reduce the impact of unused CSS.
+## JavaScript wins
 
-## JavaScript Wins
+The wins in JS execution are smaller, and mostly about how and when a feature runs, not the code itself. Planning and architecture do more here than any single optimisation.
 
-There are some minor wins in the actual execution of JavaScript. Optimising code for a high percentage measure is about what approach you're taking to the feature you're trying to build and when and how that feature gets executed in the browser. More often than not, it boils down to planning and architecture.
+Worth looking into: route-based code splitting, tree shaking, dynamic import, facade patterns, and import-on-interaction or import-on-visibility.
 
-It's worthwhile looking into recommended performance best practices like Route-based Code Splitting, Tree Shaking, Dynamic Import, Facade Patterns and Import on Interaction/Visibility.
+## Build tool wins
 
-## Build Tool Wins
+Webpack handles code-splitting and tree-shaking well, and both help coverage numbers directly. This space moves fast, so it's worth checking whether a newer build tool gets you further with less effort.
 
-Webpack is a sophisticated build manager that aids in code-splitting, tree-shaking, and other JavaScript wins that can, without a doubt, speed you along on the coverage front. As this space constantly evolves, keep looking for newer versions of build tools or even new build tools offering more performant features.
+## Dead ends, not worth the effort
 
-## Dead Ends / Not Worth The Effort
+Two things will stop you cold no matter how much you optimise.
 
-When it comes to gaining a high percentage measure with code coverage, two scenarios that will stop you dead in your tracks are:
+Third-party scripts are the first. You have almost no control over how they execute, and really only three options: retain the script, remove it, or find a way to defer its execution.
 
-Generally speaking, we have little control over how third-party scripts execute. In this case, we only have three options:
+Frameworks and libraries are the second. Even the fastest ones carry code you can't selectively strip out.
 
-retain the script, remove the script, determine a way to defer the script execution.
+It's worth keeping this in perspective, too. Chasing coverage on code that barely affects real performance isn't worth the time.
 
-Frameworks and Libraries are more complex. Removing unused code from even the fastest frameworks is only sometimes possible.
+## Planning and refactoring
 
-It's also essential to understand where the necessity of this fits in concerning the state of performance on your site. There's no need to optimise everything if it doesn't yield valuable results.
+Your stack and architecture matter more than any individual fix. Each one expects something slightly different from you when it comes to shipping only what a page needs.
 
-## Planning and Refactoring
-
-Technology stacks and architectures are your friends here. Each technology stack will expect something slightly different from you when selectively deciding how to deliver code that receives a high code coverage percentage.
-
-High Code Coverage is a gateway (in the long term) for bullet-proof performance. Ensure JavaScript code gets written to best performance practices. A well-moulded build configuration and careful planning of site features can also bolster successful attempts at increasing code coverage.
+High code coverage is a long-term path to solid performance, not a quick win. Write JavaScript to good performance practices, get your build configuration right, and plan features with this in mind from the start, and the coverage numbers tend to follow.
 
 ## Conclusion
 
-High-percentage code coverage is a great way to ensure a lightweight and performant website. Many tools are available to help you identify, audit and remediate code that may have poorer-than-expected coverage across your site. Remember that your options become limited as soon as you buy into 3rd-party scripts and complex frameworks/libraries.
+High code coverage is one of the more reliable ways to keep a site lightweight. There are plenty of tools to help you find and fix the gaps. Just know that your options shrink fast once third-party scripts and heavier frameworks are in the mix.
 
-The chances of 100% code coverage across both CSS and JavaScript are likely unrealistic. You may also have an incredibly complex site that warrants large payloads, making attaining impactful code coverage more difficult.
+100% coverage across both CSS and JS is unlikely on any real project. A genuinely complex site may need a large payload, and that's fine. The goal is removing clear waste, not chasing a perfect number.

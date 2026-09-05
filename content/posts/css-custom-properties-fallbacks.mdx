@@ -4,31 +4,41 @@ dek: 'Less boilerplate, fewer surprises.'
 date: '2024-05-06'
 topics:
   - css
-shortAnswer: 'Less boilerplate, fewer surprises.'
-takeaways: []
-faq: []
-needsRewrite: true
+shortAnswer: 'CSS custom properties get more useful with a fallback value: `var(--button-bg, var(--color-primary))` instead of just `var(--button-bg)`. It makes a property optional per component instead of redefining every value in every variation, which means less CSS shipped and less boilerplate to maintain.'
+takeaways:
+  - "A custom property's second argument in `var()` is a fallback, not decoration. `var(--button-bg, var(--color-primary))` falls back to the primary color if `--button-bg` isn't set."
+  - This makes each property effectively optional per variation, so a secondary button class only needs to override the two or three properties that actually change.
+  - Less boilerplate means less CSS shipped over the wire. That's a real, if modest, performance win at scale.
+  - Fallback support has been baseline since April 2017, so this works in every browser you're likely to still support.
+faq:
+  - question: What does the second argument in CSS var() do?
+    answer: "It's a fallback value. `var(--button-bg, var(--color-primary))` uses `--button-bg` if it's defined, and falls back to `--color-primary` if it isn't. Most people only ever use the first argument."
+  - question: Do I need a @supports check for CSS custom property fallbacks?
+    answer: 'No, not for basic use. Fallback values in var() have been baseline since April 2017. A @supports(--css: variable) {} check only matters if you''re still supporting genuinely old browsers.'
+  - question: Does this actually improve performance?
+    answer: A little. Fewer redeclared properties per variation means a smaller stylesheet, which matters more as a component library grows. It's not a dramatic win on its own, but it compounds.
+needsRewrite: false
 ---
 
-By now, most of us are accustomed to using CSS Custom Properties on projects. Since its introduction in 2017, CSS Custom Properties, also known as CSS variables, have optimised the code we work with and allowed engineers a finer degree of control when managing values within rules.
+Most of us are used to CSS custom properties by now. Since they landed in 2017, custom properties (CSS variables) have cut down on boilerplate and given engineers a lot more control over the values inside a rule.
 
-CSS Custom Properties can be tricky to deal with and aren’t always as intuitive as one might hope. However, when used right, they can significantly reduce boilerplate code and keep things efficient, making our work more productive.
+They can still be tricky to work with, and they're not always as intuitive as you'd hope. Used well, though, they cut a surprising amount of boilerplate.
 
-While the approach below is not perfect, it works well when writing CSS for building projects.
+The approach below isn't perfect, but it holds up well in real projects.
 
-## Why Use CSS Custom Properties
+## Why use CSS custom properties
 
-As far as my experience goes, I can only think of three possible reasons to implement a CSS Variable:
+In my experience there are really only three reasons to reach for one:
 
-*   We want to use a given value in more than one place,
-*   We know that a value will change in the future and want to reduce our efforts for refactoring,
-*   We need to store dynamic values from JS execution.
+- You want to reuse a value in more than one place
+- You know a value will change later and want to avoid a big refactor
+- You need to store a dynamic value set from JS
 
-With this in mind, we can be more assertive about our use cases. Point 3 is less of a concern for this article, but points 1 and 2 are essential. Let's illustrate this using the familiar HTML button element.
+Point three isn't really the focus here. Points one and two are the ones that matter. Let's look at the classic example: a button.
 
-## The Infamous Button
+## The infamous button
 
-Buttons are notoriously tricky to style consistently for such a simple HTML element. Perhaps it’s because they have several different states and applications, regardless - it's usually the first component we Frontend Engineers take on when it comes to a fresh build. Let's have a look at how we could write the style for a button using CSS Custom Properties:
+Buttons are notoriously hard to style consistently, even though they're one of the simplest HTML elements around. Maybe it's because they carry so many states and variations. Either way, it's usually the first component a frontend engineer touches on a fresh build. Here's a typical way to style one with custom properties:
 
 ```css
 :root {
@@ -42,7 +52,7 @@ Buttons are notoriously tricky to style consistently for such a simple HTML elem
  --button-bg: var(--color-primary);
  --button-color: var(--color-text-inverted);
  --button-border: var(--color-border);
-    
+
  align-items: center;
  background-color: var(--button-bg);
  border: 1px solid var(--button-border);
@@ -52,11 +62,11 @@ Buttons are notoriously tricky to style consistently for such a simple HTML elem
 }
 ```
 
-As far as this example goes, from a technical standpoint, it’s great. It’s clean and straightforward and would get a 👍 from me in a code review. But could we optimise it further? Well, yes.
+Technically, this is fine. It's clean, and it'd get a 👍 in a code review. But can it be tighter? Yes.
 
-The var() function in CSS is pretty nifty…we’re used to using it in a somewhat one-dimensional way by just rendering out a value; however, it can be more dynamic. The way to do this is by using a **fallback value**.
+The `var()` function is more capable than most people give it credit for. We tend to use it in a one-dimensional way, rendering out a single value, but it can do more than that with a **fallback value**.
 
-If we considered the above example, we could rewrite it like so:
+Take the same example and rewrite it:
 
 ```css
 :root {
@@ -79,7 +89,7 @@ If we considered the above example, we could rewrite it like so:
 }
 ```
 
-This is far cleaner and will lead to the same outcomes as the previous example - with less boilerplate code. Overriding it in a variation makes each locally scoped CSS Variable (effectively) optional. We can easily now optionally define the variables defined in .button as separate variations:
+That's cleaner, and it produces the same result with less boilerplate. Overriding a property inside a variation effectively makes every locally scoped custom property optional. Now a variation only needs to define what actually changes:
 
 ```css
 .button:where(.button-secondary) {
@@ -93,24 +103,23 @@ This is far cleaner and will lead to the same outcomes as the previous example -
 }
 ```
 
-Although this technique is not revolutionary, we care how many lines of compressed text are heading over the wire. The less physical memory a CSS file takes up, the better, which ultimately translates to how many lines of CSS exist. In the first example, we’re looking at almost double the amount of code to achieve the same thing in our optimised example.
+None of this is revolutionary, but it matters how much compressed text ships over the wire. A smaller CSS file is a smaller CSS file: fewer lines, less to parse, less to maintain. The first example needed almost double the code to do the same job as the fallback version.
 
-This compound effect has an influential impact on performance and further improves readability and developer experience. If you'd like to play around a bit further, feel free to fork the following Code Pen: [https://codepen.io/iamdainemawer/pen/NWmQZMz](https://codepen.io/iamdainemawer/pen/NWmQZMz)
+That adds up. Less CSS means a small but real performance win, and it's easier to read besides. If you want to poke at it yourself, here's a [CodePen](https://codepen.io/iamdainemawer/pen/NWmQZMz) to fork.
 
-## Support
+## Browser support
 
-Since April 2017, according to [Google Baseline](https://web.dev/blog/introducing-baseline), this feature is well-supported across all major browsers. If you're interested to learn more about Baseline, read my post about [Google Baseline and Its Impact](https://dainemawer.com/articles/what-is-google-baseline-and-its-impactbacks-for-efficiency)
+Fallback values in `var()` have been baseline since April 2017, per [Google Baseline](https://web.dev/blog/introducing-baseline), so they work in every browser worth supporting today. I wrote more about [what Baseline actually means](/what-is-google-baseline) if you want the full picture.
 
-You can check for browser support by adding the following statement to your CSS stylesheets:
+If you do need to check for support explicitly, this is the statement:
 
 ```css
 @supports(--css: variable) {}
 ```
 
-*   [Can I Use - CSS Nesting](https://caniuse.com/?search=CSS%20Custom%20Prop)
-*   [CSS Specification - CSS Nesting Module](https://w3c.github.io/csswg-drafts/css-nesting/)
+## Further reading
 
-## Resources
-
-*   [MDN - CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
-*   [CSS Variables Polyfill](https://github.com/aaronbarker/css-variables-polyfill)
+- [Can I Use: CSS custom properties](https://caniuse.com/?search=CSS%20Custom%20Prop)
+- [CSS Specification: CSS Nesting Module](https://w3c.github.io/csswg-drafts/css-nesting/)
+- [MDN: Using CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
+- [CSS Variables Polyfill](https://github.com/aaronbarker/css-variables-polyfill)
