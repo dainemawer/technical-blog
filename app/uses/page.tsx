@@ -58,17 +58,17 @@ export default function UsesPage() {
               >
                 {section.label}
               </h2>
-              <div className="flex flex-col gap-5 text-base text-ink leading-normal">
+              <ul className="flex flex-col gap-5 text-base text-ink leading-normal">
                 {section.items.map((item) => (
-                  <div
+                  <li
                     key={item.name}
                     className="grid grid-cols-subrow items-baseline gap-x-8"
                   >
                     <div className="font-medium">{item.name}</div>
                     <div className="text-muted">{item.description}</div>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           ))}
         </div>

@@ -3,10 +3,12 @@ import type { ReactNode } from "react";
 export function MetaRow({
   id,
   label,
+  headingLevel: Heading = "h2",
   children,
 }: {
   id?: string;
   label: ReactNode;
+  headingLevel?: "h2" | "h3";
   children: ReactNode;
 }) {
   return (
@@ -14,9 +16,9 @@ export function MetaRow({
       id={id}
       className="grid grid-cols-meta items-start gap-x-12 scroll-mt-10"
     >
-      <div className="text-right text-sm text-faint leading-normal">
+      <Heading className="text-right text-sm text-faint leading-normal font-normal">
         {label}
-      </div>
+      </Heading>
       <div>{children}</div>
     </div>
   );

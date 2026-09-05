@@ -23,15 +23,17 @@ export default function NowPage() {
           <Logo />
           <nav aria-label="Archive" className="flex flex-col gap-3.5 pr-10">
             <div className="mb-1 text-faint text-xs">Previously</div>
-            {now.archive.map((entry, index) => (
-              <span
-                key={entry}
-                className="text-ink text-sm"
-                style={{ opacity: index === 0 ? 1 : 0.32 }}
-              >
-                {entry}
-              </span>
-            ))}
+            <ul className="flex flex-col gap-3.5">
+              {now.archive.map((entry, index) => (
+                <li
+                  key={entry}
+                  className="text-ink text-sm"
+                  style={{ opacity: index === 0 ? 1 : 0.32 }}
+                >
+                  {entry}
+                </li>
+              ))}
+            </ul>
           </nav>
         </div>
       }
@@ -63,7 +65,7 @@ export default function NowPage() {
 
           {latest && (
             <MetaRow label="Latest">
-              <PostListItem post={latest} />
+              <PostListItem post={latest} headingLevel="h3" />
             </MetaRow>
           )}
         </div>

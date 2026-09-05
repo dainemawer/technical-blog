@@ -22,25 +22,33 @@ export default function AboutPage() {
             <div className="mb-1 text-faint text-xs">
               Elsewhere on this page
             </div>
-            <Link
-              href="/about"
-              aria-current="page"
-              className="text-ink text-sm"
-            >
-              About
-            </Link>
-            <Link
-              href="/uses"
-              className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
-            >
-              Uses
-            </Link>
-            <Link
-              href="/now"
-              className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
-            >
-              Now
-            </Link>
+            <ul className="flex flex-col gap-3.5">
+              <li>
+                <Link
+                  href="/about"
+                  aria-current="page"
+                  className="text-ink text-sm"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/uses"
+                  className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
+                >
+                  Uses
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/now"
+                  className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
+                >
+                  Now
+                </Link>
+              </li>
+            </ul>
           </nav>
         </div>
       }
@@ -74,37 +82,37 @@ export default function AboutPage() {
 
         <div className="mt-17 flex flex-col gap-10">
           <MetaRow label="Work">
-            <div className="flex flex-col gap-5.5 text-base text-ink leading-normal">
+            <ul className="flex flex-col gap-5.5 text-base text-ink leading-normal">
               {about.work.map((item) => (
-                <div
+                <li
                   key={item.period}
                   className="grid grid-cols-subrow items-baseline gap-x-8"
                 >
                   <div className="text-sm text-muted">{item.period}</div>
                   <div>{item.description}</div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </MetaRow>
 
           <MetaRow id="speaking" label="Speaking">
-            <div className="flex flex-col gap-3.5 text-base text-ink leading-normal">
+            <ul className="flex flex-col gap-3.5 text-base text-ink leading-normal">
               {about.speaking.map((item) => (
-                <div
+                <li
                   key={item.venue}
                   className="grid grid-cols-subrow items-baseline gap-x-8"
                 >
                   <div className="text-sm text-muted">{item.venue}</div>
                   <div>{item.topic}</div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </MetaRow>
 
           <MetaRow id="writing" label="Writes about">
-            <div className="flex flex-wrap items-baseline gap-x-2 text-sm text-muted">
+            <ul className="flex flex-wrap items-baseline gap-x-2 text-sm text-muted">
               {about.writesAbout.map((topic, index) => (
-                <span key={topic.href} className="flex items-baseline gap-x-2">
+                <li key={topic.href} className="flex items-baseline gap-x-2">
                   {index > 0 && <span className="text-divider">|</span>}
                   <Link
                     href={topic.href}
@@ -112,15 +120,15 @@ export default function AboutPage() {
                   >
                     {topic.label}
                   </Link>
-                </span>
+                </li>
               ))}
-            </div>
+            </ul>
           </MetaRow>
 
           <MetaRow label="Verify">
-            <div className="flex flex-wrap items-baseline gap-x-2 text-sm text-muted">
+            <ul className="flex flex-wrap items-baseline gap-x-2 text-sm text-muted">
               {about.verify.map((link, index) => (
-                <span key={link.href} className="flex items-baseline gap-x-2">
+                <li key={link.href} className="flex items-baseline gap-x-2">
                   {index > 0 && <span className="text-divider">|</span>}
                   <a
                     href={link.href}
@@ -128,9 +136,9 @@ export default function AboutPage() {
                   >
                     {link.label}
                   </a>
-                </span>
+                </li>
               ))}
-            </div>
+            </ul>
           </MetaRow>
         </div>
       </div>
