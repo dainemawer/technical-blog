@@ -1,99 +1,92 @@
 ---
-title: Leveraging CommitLint for Consistent Commit Messages
-dek: >-
-  Learn how CommitLint can help improve the quality and clarity of your
-  project's commit history by enforcing a consistent commit message style. Find
-  out how to easily integrate CommitLint into your continuous integration
-  pipeline and start reaping the benefits today.
+title: Enforcing Consistent Commit Messages with CommitLint
+dek: A style guide for commits, and a hook that actually enforces it.
 date: '2023-01-19'
 topics:
   - engineering-management
-shortAnswer: >-
-  Learn how CommitLint can help improve the quality and clarity of your
-  project's commit history by enforcing a consistent commit message style. Find
-  out how to easily integrate CommitLint into your continuous integration
-  pipeline and start reaping the benefits today.
-takeaways: []
-faq: []
-needsRewrite: true
+shortAnswer: CommitLint checks commit messages against a style guide, usually Conventional Commits, and rejects the ones that don't match. Install it, run `commitlint --init` for a starter config, then wire it to Husky's commit-msg hook so a bad commit message gets caught before it lands instead of sitting in the history forever.
+takeaways:
+  - CommitLint doesn't write commit messages for you. It just rejects ones that don't follow whatever format you've configured, Conventional Commits by default.
+  - "Wiring it to a Husky commit-msg hook catches a bad message before it lands, rather than relying on everyone remembering the convention."
+  - "commitlint.config.js controls the rule set, the parser preset, and the output formatter. Most projects never touch anything past the default rules."
+  - A consistent commit format makes it much easier to generate changelogs and release notes later without hand-editing them.
+faq:
+  - question: Does CommitLint enforce Conventional Commits automatically?
+    answer: Not unless you configure it to. Running commitlint --init gives you a starting config, usually built on @commitlint/config-conventional, but you can define your own rule set instead.
+  - question: How do I stop bad commit messages before they're committed?
+    answer: Install Husky, run husky install, then add a commit-msg hook that runs commitlint --edit. That checks every commit message before it's finalized, rather than catching it after the fact in CI.
+  - question: Can CommitLint run in CI as well as locally?
+    answer: Yes. Add a script step that runs your lint:commit command as part of the pipeline, so a message that slipped past a local hook, or was committed without one installed, still gets caught before merge.
+needsRewrite: false
 ---
 
-## **Introduction**
+CommitLint is a small package that lints Git commit messages against a style guide you define. Commit messages tend to get sloppy over the life of a project. CommitLint catches that by rejecting anything that doesn't match the convention.
 
-CommitLint is a handy package that allows engineers to lint and control how Git commit messages are added to project changes. During the lifespan of development cycles, software engineers tend to get a bit sloppy when writing informative and precise commit messages. CommitLint intends to solve that by enforcing a particular style guide for commits.
+## Why use CommitLint
 
-This aids in standardising project commits across a multi-disciplinary team.
+A few concrete reasons to add it to a workflow:
 
-## **Why Use CommitLint?**
+- A consistent style keeps commit history predictable across a team, and makes generating changelogs or release notes far less manual.
+- Structured messages (a JIRA ticket number, a clear type prefix) are easier for someone unfamiliar with the change to parse later, including future you.
+- It also catches basic mistakes: inappropriate language, or a message written in the wrong language for the project.
 
-There are several reasons to consider implementing CommitLint into your workflow:
+## How to set it up
 
-*   Enforce a commit message style guide: This provides clarity to team members, keeps git logs and Git commit history consistent and predictable, and makes it easier to generate CHANGELOG's and release notes.
-*   Ensures that commit messages contain the information that they should. This convention makes it easier for team members unfamiliar with, or close to the work to understand. At times it can be helpful to ensure that JIRA ticket numbers are placed within commits to allow engineers and other contributors to ensure that commit messages are descriptive and informative: This makes it easier for team members to understand the changes made and the reasoning behind them. It also makes it easier for other developers to understand the project's history when they join the team or when they need to make changes to the code.
-*   Prevent mistakes and improve overall quality: CommitLint can prevent inappropriate or offensive language in commit messages and ensure that commit messages are written in English (or whatever language is specified).
-
-## **How to Implement CommitLint?**
-
-To integrate CommitLint into a project, you must install it using npm. Open a terminal window and navigate to the root directory of your project. Then, run the following command:
+Install it with npm from the root of your project:
 
 ```bash
- npm install commitlint --save-dev 
+npm install commitlint --save-dev
 ```
 
-Next, you will need to create a configuration file for CommitLint. This file will specify the rules that CommitLint should enforce in your project.
-
-To make the configuration file, run the following command:
+Then generate a config file, which is where the actual rules live:
 
 ```bash
- npx commitlint --init 
+npx commitlint --init
 ```
 
-The above will create a commitlint.config.js file in the root directory of your project. You can edit this file to specify the rules you want CommitLint to enforce.
+That creates `commitlint.config.js`. Edit it to change which rules CommitLint enforces.
 
-One extra step is required if you want to run CommitLint on commit instead of manually.
-
-You'll need first to install [Husky](https://typicode.github.io/husky/#/):
+To run CommitLint automatically on every commit rather than by hand, install [Husky](https://typicode.github.io/husky/#/) first:
 
 ```bash
- npm install husky --save-dev 
+npm install husky --save-dev
 ```
 
-Then run the below to activate Husky Hooks:
+Activate Husky's hooks:
 
 ```bash
- npx husky install 
+npx husky install
 ```
 
-Finally, you'll need to add the commitlint hook to Husky:
+Then wire CommitLint into the commit-msg hook:
 
 ```bash
- npx husky add .husky/commit-msg 'npx --no -- commitlint --edit ${1}' 
+npx husky add .husky/commit-msg 'npx --no -- commitlint --edit ${1}'
 ```
 
-You can find more information on the above steps in the [local setup guide](https://commitlint.js.org/#/guides-local-setup).
+The [local setup guide](https://commitlint.js.org/#/guides-local-setup) covers this in more depth if any of these steps behave unexpectedly.
 
-## **CommitLint Configuration Options**
+## Configuration options
 
-The commitlint.config.js file allows you to specify a wide range of configuration options for CommitLint. Some of the most important options include:
+`commitlint.config.js` supports a wide range of options. The ones you'll actually touch:
 
-*   **Rules**: An object that sets the rules that CommitLint should enforce. Each key in the object corresponds to a specific rule, and the value is either true or false.
-*   **parserPreset**: The parser preset that should be used to parse commit messages.
-*   **formatter**: The formatter that lints the output of results from CommitLint.
+- **rules**: an object where each key is a specific rule, set to on or off.
+- **parserPreset**: which parser CommitLint uses to read commit messages.
+- **formatter**: how CommitLint's output gets displayed.
 
-For a complete list of configuration options, see the [CommitLint documentation](https://commitlint.js.org/#/reference-configuration).
+The [full reference](https://commitlint.js.org/#/reference-configuration) covers everything else.
 
-## **How to Integrate CommitLint into Your CI Pipeline**
+## Running it in CI
 
-To integrate CommitLint into your project's CI pipeline, you must add it as a step in the pipeline configuration. For example, if you are using Travis CI, you can add the following to your .travis.yml file:
+Add CommitLint as a step in your pipeline so a message that slipped past a local hook still gets caught. In Travis CI, for example:
 
-```javascript
-script: - npm run lint: commit 
+```yaml
+script:
+  - npm run lint:commit
 ```
 
-The above will cause CommitLint to run on every commit, ensuring that all commit messages in your project follow the specified convention.
+That runs CommitLint against every commit in the build, so nothing merges without a message that follows the convention.
 
-## **Conclusion**
+## Conclusion
 
-In summary, CommitLint is a helpful tool that can enforce a consistent commit message style, ensure that commit messages are descriptive and informative and improve the overall project quality.
-
-By using CommitLint, you can make it easier for team members to understand the history of the project and its changes, allowing you to improve the professionalism and clarity of your project's commit history.
+CommitLint doesn't do anything glamorous. It just enforces a style guide consistently, which is exactly the kind of thing humans are bad at doing by hand over a long project. The payoff is a commit history that's actually useful to the next person who has to read it.

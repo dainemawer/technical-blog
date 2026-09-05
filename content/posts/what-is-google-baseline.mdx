@@ -1,77 +1,80 @@
 ---
-title: What Is Google Baseline and Its Impact?
+title: What Is Google Baseline and Why Does It Matter?
 dek: 'Interoperability across browser vendors, explained.'
 date: '2024-04-28'
 topics:
   - css
-shortAnswer: 'Interoperability across browser vendors, explained.'
-takeaways: []
-faq: []
-needsRewrite: true
+shortAnswer: 'Baseline is Google''s cross-vendor scorecard for web features. It tells you whether something is stable across Chrome, Firefox, Safari, and Edge without checking each vendor''s docs separately. A feature is either "Newly available" (just landed everywhere) or "Widely available" (stable for 30 months or more), so you know at a glance whether it''s safe to ship without a fallback.'
+takeaways:
+  - Baseline replaces piecing together support info from caniuse.com, MDN, and each vendor's own release notes with one status per feature.
+  - "\"Newly available\" means a feature just reached all four major engines. \"Widely available\" means it's been stable for at least 30 months, generally safe to use without a fallback."
+  - The four vendors Baseline tracks are Safari, Firefox, Chrome, and Edge, on their two most recent versions each.
+  - Evergreen auto-updating browsers, everything except Safari, which still needs a manual update, mean most users are already on a version that supports Baseline-flagged features.
+faq:
+  - question: What's the difference between Newly available and Widely available in Baseline?
+    answer: Newly available means a feature just became supported across all four major browser engines. Widely available means it's been supported for 30 months or more, generally considered safe to use without a fallback or polyfill.
+  - question: Which browsers does Baseline track?
+    answer: Safari, Firefox, Chrome, and Edge, specifically their two most recent versions. That's the same set of vendors behind the Interop project.
+  - question: Where can I check a feature's Baseline status?
+    answer: MDN, web.dev, and caniuse.com all display Baseline badges directly on feature pages now, so a separate tool usually isn't needed.
+needsRewrite: false
 ---
 
-For years, web developers of all experience levels have relied on [caniuse.com](http://caniuse.com) to understand the support of a given feature. Reviewing caniuse.com is helpful in determining backward compatibility or which of the modern browsers supports cutting-edge improvements to web specifications.
+For years, checking [caniuse.com](http://caniuse.com) was the default way to figure out whether a feature was safe to use, whether for backward compatibility or to check if modern browsers had caught up to a newer spec.
 
-In 2023, Google introduced [Baseline](https://web.dev/blog/introducing-baseline) to the web community. This tool is not just another addition to the developer's toolkit but a crucial aid in determining the safety of features and APIs for use in production-grade web applications. It’s a platform for interoperability, a much-needed resource to help engineers produce more consistent and efficient experiences, and a testament to Google's commitment to improving web best practices.
+In 2023, Google introduced [Baseline](https://web.dev/blog/introducing-baseline). It's a way to check whether a feature or API is stable enough for production, aimed at making cross-browser support easier to reason about at a glance.
 
-## Why Google Baseline?
+## Why Baseline exists
 
-Browsers are constantly evolving, and vendors release updates monthly. With more individuals contributing and working on specifications than ever before and a far more transparent dialogue between the main browser vendors (Safari, Firefox, Chrome, Edge), it's become increasingly difficult to track which new features are stable across the landscape. However, with the introduction of Baseline, this struggle is significantly alleviated.
+Browsers update monthly, more people are contributing to specs than ever, and the dialogue between vendors (Safari, Firefox, Chrome, Edge) is more open than it used to be. That combination makes it genuinely hard to track which new features are actually stable everywhere. Baseline exists to make that easier.
 
-Considering the above, as new features are released into browser engines, engineers often need more time to ramp up, refactor, or strategically plan the introduction of new features into their code bases.
+As new features land in browser engines, engineers still need time to ramp up, refactor, or plan a rollout. Google has acknowledged it's partly responsible for the pace problem here, since Chrome is often first to ship cutting-edge features. That's part of why the Chrome team built [web.dev](https://web.dev) and [developer.chrome.com](https://developer.chrome.com), and Baseline has pushed further documentation and interoperability-focused conferences since.
 
-More importantly, as Google is often one of the platforms that pushes Frontend technology forward, they self-admittedly accepted that they are partly to blame here. It’s one of the reasons the Chrome team came up with [web.dev](https://web.dev) and [developer.chrome.com](https://developer.chrome.com), as Chrome is often the first browser to land cutting-edge technologies. The introduction of Baseline has also led to further documentation, and conferences focused on interoperability.
+New features mean new documentation too. Google has put real effort into keeping MDN current as newer technologies land in Chrome.
 
-New features mean documentation, and Google has made strides to ensure MDN has the relevant documentation for newer technologies as they land in Chrome.
+## Closing the vendor gap
 
-## Closing the Vendor Gap
+The core problem engineers deal with is inconsistent feature behaviour across browser engines. It's a genuine pain point, and one that often demands its own planning and workarounds just to route around a specific engine's gaps.
 
-From Google's perspective, engineers have one significant struggle: _the behaviour and consistency of features across vendors and browser engines_. It’s a pain point for all engineers in the field, requiring complex planning and solutions often to overcome a particular browser engine's lack of support.
-
-The solution here (for the last two years) was [Interop 2022](https://web.dev/blog/interop-2022) and [Interop 2023](https://web.dev/blog/interop-2023) - a conference and community that helps bridge the gap between browsers to provide a more consistent and performant web.
+For the last few years, [Interop 2022](https://web.dev/blog/interop-2022) and [Interop 2023](https://web.dev/blog/interop-2023) have been the community effort to close that gap and push toward a more consistent web.
 
 ## What is Baseline?
 
-Baseline serves as the universal flag of acceptance across browser vendors. It helps engineers determine what is fully stable across the landscape and across browser vendors for the most recent two versions of each browser. This feature stability assurance is a game-changer in web development, providing a reliable benchmark for engineers to base their decisions on.
+Baseline is a status flag: it tells you whether a feature is fully stable across the major browser vendors, checked against each vendor's most recent two versions. It gives engineers one place to check instead of cross-referencing several.
 
-## How Does Baseline Work?
+## How Baseline works
 
-You can access Google Baseline on [MDN](https://developer.mozilla.org/), [web.dev](https://web.dev) and [caniuse.com](http://caniuse.com).
+You can check Baseline status directly on [MDN](https://developer.mozilla.org/), [web.dev](https://web.dev), and [caniuse.com](http://caniuse.com).
 
-Baseline also plans to provide a way to see what has become stable across all browser vendors through a year-on-year approach. For instance, you can read the following article to see what got added to Baseline in 2023: [Baseline 2023](https://web.dev/blog/baseline2023)
+Baseline also tracks what became stable year over year. [Baseline 2023](https://web.dev/blog/baseline2023), for example, covers everything that reached that bar during the year.
 
-As engineering teams, we must keep up with these changes and avoid getting stuck in old solutions for common problems.
+Baseline uses two labels:
 
-Importantly, Baseline has two labels:
+- **Newly available**: the feature just reached support across all four major engines. It works everywhere, but hasn't been around long enough to be considered a safe default without checking your specific browser support targets.
+- **Widely available**: the feature has been supported across all four for 30 months or more. At this point it's generally safe to use without a fallback or polyfill.
 
-Baseline considers the major browser vendors to be:
+The vendors Baseline considers:
 
-*   [Safari](https://www.apple.com/safari/) (macOS and iOS)
-*   [Firefox](https://www.mozilla.org/en-US/firefox/new/) (Desktop + Android)
-*   [Chrome](https://www.google.com/chrome/) (Desktop + Android)
-*   [Edge](https://www.microsoft.com/en-us/edge/download?form=MA13FJ) (Desktop)
+- [Safari](https://www.apple.com/safari/) (macOS and iOS)
+- [Firefox](https://www.mozilla.org/en-US/firefox/new/) (desktop and Android)
+- [Chrome](https://www.google.com/chrome/) (desktop and Android)
+- [Edge](https://www.microsoft.com/en-us/edge/download?form=MA13FJ) (desktop)
 
-## Effect on Engineering Teams
+## Effect on engineering teams
 
-One of the most significant benefits of Google Baseline for engineering teams is the removal of guesswork and research required to implement new features. For instance, a Frontend Engineer may want to leverage CSS Grid's new [sub-grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Subgrid) feature. With Baseline, they can quickly and confidently determine its support across major browsers, saving time and effort.
+The biggest win for teams is cutting out the guesswork before adopting a new feature. Say a frontend engineer wants to use CSS Grid's [subgrid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Subgrid) feature. Baseline gives a fast, confident answer on support instead of a research task.
 
-Sub-grid helps engineers define a grid within a grid to have more refined control over layouts. Heading to [caniuse.com](http://caniuse.com) tells us there’s a global usage percentage of **87.42%**—pretty decent, but we still need to ascertain which browser vendors support / don’t support / partially support the feature.
+Subgrid lets you define a grid inside a grid for finer layout control. [caniuse.com](http://caniuse.com) puts global usage at **87.42%**, which sounds decent, but doesn't tell you which vendors support it, partially support it, or don't. That's where Baseline fills the gap: caniuse now shows a Baseline badge marking subgrid as "newly available across major browsers." MDN's subgrid docs carry the same badge, and the [web.dev writeup](https://web.dev/blog/baseline2023) confirms it landed in Baseline in 2023. Three sources, one consistent answer.
 
-[CanIUse](https://caniuse.com/) now displays a Baseline badge which tells us that this feature is “_Newly available across major browsers_”
+## A word on evergreen browsers
 
-Likewise, if you review the documentation for the sub-grid on MDN, you’ll see a similar banner:
+This doesn't get talked about enough. For most users, manually updating a browser is a thing of the past. Chrome, Firefox, and Edge auto-update. Safari is the outlier, still requiring a manual update or an annual OS upgrade.
 
-Finally, if you review the sub-grid article on [web.dev](https://web.dev/), you’ll see this feature got added to [Baseline in 2023](https://web.dev/blog/baseline2023):
+Even so, more users than ever are running the latest browser version. Graceful degradation still matters, but it's less of a hard requirement now and more of an extra layer of safety.
 
-## A Word on Evergreen Browsers
+## Useful links
 
-We do not talk enough about this topic, in my opinion. For most modern users, the days of manually updating browsers are gone. Chrome, Firefox, and Edge auto-update automatically. Safari is an outlier in this case. Safari requires a manual update when a new release is sent out from Apple, or when upgrading OS X annually.
-
-Regardless, more users than ever use the latest version of browsers. Although we should ensure the features we build degrade gracefully, this is less of a fundamental consideration nowadays and more of a luxury assumption.
-
-## Useful Links
-
-*   [Google Baseline](https://web.dev/baseline)
-*   [Google Baseline Introduction](https://web.dev/blog/introducing-baseline)
-*   [Baseline 2023](https://web.dev/blog/baseline2023)
-*   [Interop 2022](https://web.dev/blog/interop-2022-wrapup) / [Interop 2023](https://web.dev/blog/interop-2023)
+- [Google Baseline](https://web.dev/baseline)
+- [Google Baseline introduction](https://web.dev/blog/introducing-baseline)
+- [Baseline 2023](https://web.dev/blog/baseline2023)
+- [Interop 2022](https://web.dev/blog/interop-2022-wrapup) / [Interop 2023](https://web.dev/blog/interop-2023)
