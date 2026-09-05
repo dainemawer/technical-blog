@@ -60,6 +60,82 @@
   --shadow-palette: 0 30px 70px rgb(0 40 30 / 28%);
 }
 
+/*
+ * View transition timing/keyframes for directional page navigation
+ * (see AGENTS.md skills table: vercel-react-view-transitions). Reused by
+ * "nav-forward"/"nav-back" transition types on <Link> across the writing
+ * list, article, and topic pages.
+ */
+:root {
+  --duration-exit: 150ms;
+  --duration-enter: 210ms;
+  --duration-move: 400ms;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide {
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+
+::view-transition-old(.nav-forward) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-move) ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    var(--duration-move) ease-in-out both slide;
+}
+
+::view-transition-old(.nav-back) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-move) ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    var(--duration-move) ease-in-out both slide;
+}
+
+/*
+ * The logo and utility bar (search/subscribe/RSS) aren't a persistent
+ * Next.js layout — PageShell is invoked fresh per page.tsx, so they fully
+ * unmount/remount on every navigation. Without isolation they'd still get
+ * swept into the default root cross-fade alongside the sliding content.
+ */
+::view-transition-group(site-header),
+::view-transition-group(site-logo) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header),
+::view-transition-old(site-logo) {
+  display: none;
+}
+::view-transition-new(site-header),
+::view-transition-new(site-logo) {
+  animation: none;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -96,5 +172,16 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /*
+   * The universal selector above doesn't reach view-transition
+   * pseudo-elements — they need their own rule.
+   */
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
   }
 }

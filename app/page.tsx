@@ -1,3 +1,5 @@
+import { ViewTransition } from "react";
+import { DirectionalTransition } from "@/components/directional-transition";
 import { Logo } from "@/components/logo";
 import { PageShell } from "@/components/page-shell";
 import { PostListItem } from "@/components/post-list-item";
@@ -14,22 +16,26 @@ export default async function HomePage(props: PageProps<"/">) {
   );
 
   return (
-    <PageShell
-      sidebar={
-        <div className="flex flex-col gap-14">
-          <Logo />
-          <YearFilter selected={selectedYear} />
-        </div>
-      }
-    >
-      <h1 className="sr-only">Writing</h1>
-      <ul className="flex flex-col gap-8.5">
-        {posts.map((post) => (
-          <li key={post.slug}>
-            <PostListItem post={post} />
-          </li>
-        ))}
-      </ul>
-    </PageShell>
+    <DirectionalTransition>
+      <PageShell
+        sidebar={
+          <div className="flex flex-col gap-14">
+            <Logo />
+            <YearFilter selected={selectedYear} />
+          </div>
+        }
+      >
+        <h1 className="sr-only">Writing</h1>
+        <ul className="flex flex-col gap-8.5">
+          {posts.map((post) => (
+            <ViewTransition key={post.slug}>
+              <li>
+                <PostListItem post={post} />
+              </li>
+            </ViewTransition>
+          ))}
+        </ul>
+      </PageShell>
+    </DirectionalTransition>
   );
 }
