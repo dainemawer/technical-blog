@@ -11,6 +11,7 @@ import { MetaRow } from "@/components/meta-row";
 import { PageShell } from "@/components/page-shell";
 import { Toc } from "@/components/toc";
 import { formatArticleDate } from "@/lib/format";
+import { renderInlineText } from "@/lib/inline-markdown";
 import { getPostContent } from "@/lib/mdx";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
 import { getTopicBySlug } from "@/lib/topics";
@@ -107,7 +108,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
         <div className="mt-13">
           <MetaRow label="The short answer">
             <p className="text-md text-ink leading-relaxed text-pretty">
-              {content.shortAnswer}
+              {renderInlineText(content.shortAnswer)}
             </p>
           </MetaRow>
         </div>
@@ -140,7 +141,9 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
             <MetaRow label="Takeaways">
               <ol className="flex list-decimal flex-col gap-3 pl-5.5 text-base text-ink leading-normal text-pretty">
                 {content.takeaways.map((takeaway) => (
-                  <li key={takeaway.slice(0, 40)}>{takeaway}</li>
+                  <li key={takeaway.slice(0, 40)}>
+                    {renderInlineText(takeaway)}
+                  </li>
                 ))}
               </ol>
             </MetaRow>
@@ -153,9 +156,11 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
               <div className="flex flex-col gap-7">
                 {content.faq.map((item) => (
                   <div key={item.question} className="flex flex-col gap-1.5">
-                    <h3 className="text-base text-ink">{item.question}</h3>
+                    <h3 className="text-base text-ink">
+                      {renderInlineText(item.question)}
+                    </h3>
                     <p className="text-base text-muted leading-normal text-pretty">
-                      {item.answer}
+                      {renderInlineText(item.answer)}
                     </p>
                   </div>
                 ))}
