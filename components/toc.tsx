@@ -47,16 +47,19 @@ export function Toc({
       className={`flex flex-col gap-3.5 pr-10 ${sticky ? "sticky top-10 self-start" : ""}`}
     >
       <div className="mb-1 text-faint text-xs">{heading}</div>
-      {items.map((item) => (
-        <a
-          key={item.id}
-          href={`#${item.id}`}
-          aria-current={active === item.id ? "location" : undefined}
-          className={`text-ink text-sm text-pretty transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100 ${active === item.id ? "opacity-100" : "opacity-32"}`}
-        >
-          {item.label}
-        </a>
-      ))}
+      <ul className="flex flex-col gap-3.5">
+        {items.map((item) => (
+          <li key={item.id}>
+            <a
+              href={`#${item.id}`}
+              aria-current={active === item.id ? "location" : undefined}
+              className={`text-ink text-sm text-pretty transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100 ${active === item.id ? "opacity-100" : "opacity-32"}`}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 }

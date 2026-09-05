@@ -82,16 +82,19 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
             {"Daine Mawer"}
           </Link>
           <span className="text-divider">|</span>
-          <span>
+          <time dateTime={post.date}>
             {published.day} {published.month}{" "}
             <span className="text-faint">{published.year}</span>
-          </span>
+          </time>
           {updated && (
             <>
               <span className="text-divider">|</span>
               <span>
-                Updated {updated.day} {updated.month}{" "}
-                <span className="text-faint">{updated.year}</span>
+                Updated{" "}
+                <time dateTime={post.updated}>
+                  {updated.day} {updated.month}{" "}
+                  <span className="text-faint">{updated.year}</span>
+                </time>
               </span>
             </>
           )}
@@ -136,7 +139,10 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
           ))}
 
           {content.related && (
-            <aside className="my-6.5 grid grid-cols-meta items-baseline gap-x-12 text-muted text-sm">
+            <aside
+              aria-label="Related article"
+              className="my-6.5 grid grid-cols-meta items-baseline gap-x-12 text-muted text-sm"
+            >
               <div className="text-right text-faint">Related</div>
               <Link
                 href={content.related.href}
@@ -173,7 +179,10 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
           </MetaRow>
         </div>
 
-        <div className="mt-19 grid grid-cols-2 gap-x-12 text-sm text-muted">
+        <nav
+          aria-label="Post navigation"
+          className="mt-19 grid grid-cols-2 gap-x-12 text-sm text-muted"
+        >
           {content.prev && (
             <Link
               href={content.prev.href}
@@ -190,7 +199,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
               {content.next.label}
             </Link>
           )}
-        </div>
+        </nav>
       </div>
     </PageShell>
   );

@@ -23,11 +23,13 @@ export default async function HomePage(props: PageProps<"/">) {
       }
     >
       <h1 className="sr-only">Writing</h1>
-      <div className="flex flex-col gap-8.5">
+      <ul className="flex flex-col gap-8.5">
         {posts.map((post) => (
-          <PostListItem key={post.slug} post={post} />
+          <li key={post.slug}>
+            <PostListItem post={post} />
+          </li>
         ))}
-      </div>
+      </ul>
     </PageShell>
   );
 }

@@ -36,16 +36,19 @@ export default async function TopicPage(props: PageProps<"/topics/[topic]">) {
           <Logo />
           <nav aria-label="Topics" className="flex flex-col gap-3.5 pr-10">
             <div className="mb-1 text-faint text-xs">Topics</div>
-            {topics.map((t) => (
-              <Link
-                key={t.slug}
-                href={`/topics/${t.slug}`}
-                aria-current={t.slug === topic.slug ? "page" : undefined}
-                className={`text-ink text-sm hover:opacity-100 focus-visible:opacity-100 ${t.slug === topic.slug ? "opacity-100" : "opacity-32"}`}
-              >
-                {t.name}
-              </Link>
-            ))}
+            <ul className="flex flex-col gap-3.5">
+              {topics.map((t) => (
+                <li key={t.slug}>
+                  <Link
+                    href={`/topics/${t.slug}`}
+                    aria-current={t.slug === topic.slug ? "page" : undefined}
+                    className={`text-ink text-sm hover:opacity-100 focus-visible:opacity-100 ${t.slug === topic.slug ? "opacity-100" : "opacity-32"}`}
+                  >
+                    {t.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </nav>
         </div>
       }
@@ -67,16 +70,19 @@ export default async function TopicPage(props: PageProps<"/topics/[topic]">) {
 
         <div className="mt-13 flex flex-col gap-11.5">
           <MetaRow label="Articles">
-            <div className="flex flex-col gap-7.5">
-              {posts.map((post) => (
-                <PostListItem key={post.slug} post={post} />
-              ))}
-              {posts.length === 0 && (
-                <p className="text-md text-faint">
-                  No articles under this topic yet.
-                </p>
-              )}
-            </div>
+            {posts.length > 0 ? (
+              <ul className="flex flex-col gap-7.5">
+                {posts.map((post) => (
+                  <li key={post.slug}>
+                    <PostListItem post={post} headingLevel="h3" />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-md text-faint">
+                No articles under this topic yet.
+              </p>
+            )}
           </MetaRow>
         </div>
       </div>

@@ -12,15 +12,21 @@ export function FooterElsewhere() {
           >
             {footerNav.map((group) => (
               <div key={group.heading} className="flex flex-col gap-2.5">
-                {group.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    className="hover:text-ink focus-visible:text-ink"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                <h3 className="font-normal text-faint text-xs">
+                  {group.heading}
+                </h3>
+                <ul className="flex flex-col gap-2.5">
+                  {group.links.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        className="hover:text-ink focus-visible:text-ink"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </nav>
