@@ -1,9 +1,10 @@
 export const site = {
   name: "Daine Mawer",
   logo: "D-M",
-  role: "Frontend Engineering Manager",
+  role: "Staff Engineer",
+  company: { name: "Fueled", url: "https://www.fueled.com" },
   location: "Cape Town, South Africa",
-  tagline: "Frontend Engineering Manager, Cape Town",
+  tagline: "Staff Engineer at Fueled, Cape Town",
   url: "https://dainemawer.com",
   email: "daine@dainemawer.com",
   social: {
@@ -17,7 +18,7 @@ export const footerNav = [
   {
     heading: "Site",
     links: [
-      { label: "Writing", href: "/" },
+      { label: "Writing", href: "/about#writing" },
       { label: "Speaking", href: "/about#speaking" },
       { label: "About", href: "/about" },
     ],

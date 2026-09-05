@@ -9,7 +9,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: `${site.role}. ${site.location}.`,
+  description: `${site.role} at ${site.company.name}. ${site.location}.`,
 };
 
 export default function AboutPage() {
@@ -52,7 +52,16 @@ export default function AboutPage() {
 
         <h1 className="mt-4.5 text-2xl text-ink tracking-tight">{site.name}</h1>
         <div className="mt-2 text-md text-muted text-pretty">
-          {site.role}. {site.location}.
+          {site.role} at{" "}
+          <a
+            href={site.company.url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-ink hover:opacity-60 focus-visible:opacity-60"
+          >
+            {site.company.name}
+          </a>
+          . {site.location}.
         </div>
 
         <div className="mt-13">
@@ -78,7 +87,7 @@ export default function AboutPage() {
             </div>
           </MetaRow>
 
-          <MetaRow label="Speaking">
+          <MetaRow id="speaking" label="Speaking">
             <div className="flex flex-col gap-3.5 text-base text-ink leading-normal">
               {about.speaking.map((item) => (
                 <div
@@ -92,7 +101,7 @@ export default function AboutPage() {
             </div>
           </MetaRow>
 
-          <MetaRow label="Writes about">
+          <MetaRow id="writing" label="Writes about">
             <div className="flex flex-wrap items-baseline gap-x-2 text-sm text-muted">
               {about.writesAbout.map((topic, index) => (
                 <span key={topic.href} className="flex items-baseline gap-x-2">
