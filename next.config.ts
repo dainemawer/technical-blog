@@ -71,6 +71,112 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // Old site used /articles/<slug>; this one is flat. One entry per
+      // migrated post, old slug -> new (often shortened) slug.
+      {
+        source:
+          "/articles/leading-with-ai-what-helped-me-through-the-hard-parts",
+        destination: "/leading-with-ai",
+        permanent: true,
+      },
+      {
+        source:
+          "/articles/the-rise-of-no-code-and-low-code-in-frontend-development",
+        destination: "/no-code-low-code-frontend",
+        permanent: true,
+      },
+      {
+        source:
+          "/articles/using-css-custom-properties-with-fallbacks-for-efficiency",
+        destination: "/css-custom-properties-fallbacks",
+        permanent: true,
+      },
+      {
+        source: "/articles/what-is-google-baseline-and-its-impact",
+        destination: "/what-is-google-baseline",
+        permanent: true,
+      },
+      {
+        source:
+          "/articles/determine-when-a-sticky-element-is-stuck-in-javascript",
+        destination: "/determine-when-a-sticky-element-is-stuck",
+        permanent: true,
+      },
+      {
+        source:
+          "/articles/unlocking-project-success-mastering-task-estimation-with-the-fate-framework",
+        destination: "/mastering-task-estimation",
+        permanent: true,
+      },
+      {
+        source:
+          "/articles/enhance-your-react-apps-scalability-using-storybook-and-chromatic",
+        destination: "/react-scalability-storybook",
+        permanent: true,
+      },
+      {
+        source: "/articles/understanding-chromes-coverage-panel",
+        destination: "/understanding-chromes-coverage-panel",
+        permanent: true,
+      },
+      {
+        source:
+          "/articles/the-future-of-frontend-development-in-2025-trends-ai-and-the-evolving-role-of-engineers",
+        destination: "/future-of-frontend-development-2025",
+        permanent: true,
+      },
+      {
+        source:
+          "/articles/how-to-effectively-setup-nextjs-with-a-component-library-using-monorepos",
+        destination: "/nextjs-component-library-monorepo",
+        permanent: true,
+      },
+      {
+        source: "/articles/ten-proven-techniques-for-effective-code-reviews",
+        destination: "/effective-code-reviews",
+        permanent: true,
+      },
+      {
+        source: "/articles/four-tips-for-properly-using-the-return-statement",
+        destination: "/using-the-return-statement",
+        permanent: true,
+      },
+      {
+        source: "/articles/leveraging-commitlint-for-consistency",
+        destination: "/leveraging-commitlint",
+        permanent: true,
+      },
+      {
+        source:
+          "/articles/five-frontend-file-architectures-for-better-code-organisation",
+        destination: "/frontend-file-architectures",
+        permanent: true,
+      },
+      {
+        source: "/articles/how-to-motivate-and-inspire-individual-contributors",
+        destination: "/motivate-individual-contributors",
+        permanent: true,
+      },
+      // Dropped: personal/lifestyle content, doesn't fit the new site's
+      // strictly-technical positioning (see lib/llms.ts) — send to home
+      // rather than 404.
+      {
+        source: "/articles/four-surprising-benefits-of-intermittent-fasting",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/articles/waking-up-early-a-crash-course-for-engineers",
+        destination: "/",
+        permanent: true,
+      },
+      // NOT redirected: /articles/nextjs-seo-checklist-for-frontend-developers
+      // — the old page itself 500s (noindex + broken render), so there was
+      // nothing to import. Needs a fresh write, then a redirect to match.
+    ];
+  },
 };
 
 export default nextConfig;
