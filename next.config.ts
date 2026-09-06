@@ -6,18 +6,29 @@ const isDev = process.env.NODE_ENV === "development";
 // then this stays empty and the CSP below stays as strict as it's ever been.
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 
-// No nonce: nonce-based CSP forces every page to render dynamically per
-// request (no static generation/ISR), which this mostly-static blog can't
-// afford to give up. GTM's dataLayer bootstrap is instead served as a
-// same-origin static file (public/gtm-init.js) so script-src never needs
-// 'unsafe-inline' or a hash pinned to a third-party snippet — only gtm.js
-// itself and GA4's collection endpoints need allowlisting, and only once
-// NEXT_PUBLIC_GTM_ID is actually set.
-// Dev needs 'unsafe-eval' (React's debug eval) and 'unsafe-inline' (Turbopack's
-// HMR bootstrap scripts) — neither is present in a production build.
+// 'unsafe-inline' on script-src, in production too: React/Next's own RSC
+// hydration payload ships as inline `self.__next_f.push(...)` scripts on
+// every page with a Client Component — that's not optional, and without
+// 'unsafe-inline' (or a nonce) the browser blocks every one of them, so
+// the page never hydrates at all (confirmed directly: a production build
+// with zero analytics code still throws React error #412 under a strict
+// script-src). The documented fix is nonce-based CSP via Proxy, but that
+// requires dynamic rendering on every single page (no static generation,
+// no ISR) — not a trade this mostly-static blog is making. Subresource
+// Integrity was also checked: Next's own docs rule it out for this case
+// ("cannot handle dynamically generated scripts"), which the RSC payload
+// is. 'unsafe-inline' still leaves script-src doing real work: it blocks
+// loading a script from any origin outside 'self' and the two allowed
+// analytics domains — it just stops enforcing against inline content,
+// which matters less on a site with no user-generated content rendered
+// back to visitors. No nonce: that would force every page dynamic, so
+// GTM's dataLayer bootstrap stays a same-origin static file
+// (public/gtm-init.js) rather than adding to the inline-script surface —
+// only gtm.js and GA4's collection endpoints need domain allowlisting,
+// and only once NEXT_PUBLIC_GTM_ID is actually set.
 const cspHeader = `
   default-src 'self';
-  script-src 'self'${isDev ? " 'unsafe-eval' 'unsafe-inline'" : ""}${gtmId ? " https://www.googletagmanager.com" : ""};
+  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}${gtmId ? " https://www.googletagmanager.com" : ""};
   style-src 'self' 'unsafe-inline';
   img-src 'self' data:;
   font-src 'self';
