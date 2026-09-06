@@ -19,7 +19,11 @@ export async function generateMetadata(
   const { topic: slug } = await props.params;
   const topic = getTopicBySlug(slug);
   if (!topic) return {};
-  return { title: `${topic.name} — Topics`, description: topic.dek };
+  return {
+    title: `${topic.name} articles`,
+    description: topic.dek,
+    alternates: { canonical: `/topics/${slug}` },
+  };
 }
 
 export default async function TopicPage(props: PageProps<"/topics/[topic]">) {
@@ -44,7 +48,7 @@ export default async function TopicPage(props: PageProps<"/topics/[topic]">) {
                   <Link
                     href={`/topics/${t.slug}`}
                     aria-current={t.slug === topic.slug ? "page" : undefined}
-                    className={`text-ink text-sm hover:opacity-100 focus-visible:opacity-100 ${t.slug === topic.slug ? "opacity-100" : "opacity-32"}`}
+                    className={`text-sm transition-colors duration-140 ease-out hover:text-ink focus-visible:text-ink ${t.slug === topic.slug ? "text-ink" : "text-muted"}`}
                   >
                     {t.name}
                   </Link>

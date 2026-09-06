@@ -15,7 +15,7 @@ export function YearFilter({ selected }: { selected?: number }) {
               <Link
                 href={selected === year ? "/" : `/?year=${year}`}
                 aria-current={isActive ? "page" : undefined}
-                className={`cursor-pointer font-medium text-ink text-sm transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100 md:[writing-mode:vertical-rl] md:[transform:rotate(180deg)] ${isActive ? "opacity-100" : "opacity-28"}`}
+                className={`cursor-pointer font-medium text-sm transition-colors duration-140 ease-out hover:text-ink focus-visible:text-ink md:[writing-mode:vertical-rl] md:[transform:rotate(180deg)] ${isActive ? "text-ink" : "text-muted"}`}
               >
                 {year}
               </Link>

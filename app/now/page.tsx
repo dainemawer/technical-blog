@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Now",
   description:
     "What has my attention this month, kept honest by a visible date.",
+  alternates: { canonical: "/now" },
 };
 
 export default function NowPage() {
@@ -24,8 +25,7 @@ export default function NowPage() {
             {now.archive.map((entry, index) => (
               <li
                 key={entry}
-                className="text-ink text-sm"
-                style={{ opacity: index === 0 ? 1 : 0.32 }}
+                className={`text-sm ${index === 0 ? "text-ink" : "text-muted"}`}
               >
                 {entry}
               </li>

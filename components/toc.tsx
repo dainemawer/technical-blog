@@ -53,7 +53,7 @@ export function Toc({
             <a
               href={`#${item.id}`}
               aria-current={active === item.id ? "location" : undefined}
-              className={`text-ink text-sm text-pretty transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100 ${active === item.id ? "opacity-100" : "opacity-32"}`}
+              className={`text-sm text-pretty transition-colors duration-140 ease-out hover:text-ink focus-visible:text-ink ${active === item.id ? "text-ink" : "text-muted"}`}
             >
               {item.label}
             </a>

@@ -14,13 +14,13 @@ export function PostListItem({
       <Link
         href={`/${post.slug}`}
         transitionTypes={["nav-forward"]}
-        className="grid grid-cols-1 gap-x-12 gap-y-1 opacity-42 transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100 sm:grid-cols-meta sm:items-baseline sm:gap-y-0"
+        className="group grid grid-cols-1 gap-x-12 gap-y-1 sm:grid-cols-meta sm:items-baseline sm:gap-y-0"
       >
         <time dateTime={post.date} className="text-sm text-muted sm:text-right">
           {formatPostDate(post.date)}
         </time>
         <div className="flex flex-col gap-1">
-          <Heading className="text-xl font-medium tracking-tight text-ink text-pretty">
+          <Heading className="text-xl font-medium text-muted tracking-tight text-pretty transition-colors duration-140 ease-out group-hover:text-ink group-focus-visible:text-ink">
             {post.title}
           </Heading>
           <p className="text-md text-muted text-pretty">{post.dek}</p>

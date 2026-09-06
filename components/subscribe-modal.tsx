@@ -72,7 +72,7 @@ export function SubscribeModal() {
             type="button"
             onClick={close}
             aria-label="Close"
-            className="cursor-pointer font-mono text-2xs text-faint hover:text-ink focus-visible:text-ink"
+            className="-m-2 cursor-pointer p-2 font-mono text-2xs text-faint hover:text-ink focus-visible:text-ink"
           >
             esc
           </button>

@@ -17,6 +17,7 @@ export function CommandPalette({ posts }: { posts: Post[] }) {
   const [cursor, setCursor] = useState(0);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -27,14 +28,18 @@ export function CommandPalette({ posts }: { posts: Post[] }) {
   }, [posts, query]);
 
   // Restore focus to whatever opened the palette (the ⌘K shortcut or the
-  // SearchTrigger button) once it closes, and only autofocus the input on
-  // devices with a precise pointer — a touch tap shouldn't force the
-  // on-screen keyboard open immediately.
+  // SearchTrigger button) once it closes. Focus must land inside the dialog
+  // either way (an unfocused dialog is invisible to a screen reader's
+  // virtual cursor) — on a precise pointer that's the input, so typing can
+  // start immediately; otherwise it's the dialog itself, so a touch tap
+  // doesn't force the on-screen keyboard open.
   useEffect(() => {
     if (!open) return;
     const previouslyFocused = document.activeElement as HTMLElement | null;
     if (window.matchMedia("(pointer: fine)").matches) {
       inputRef.current?.focus();
+    } else {
+      dialogRef.current?.focus();
     }
     return () => {
       previouslyFocused?.focus?.();
@@ -67,10 +72,12 @@ export function CommandPalette({ posts }: { posts: Post[] }) {
       className="fixed inset-0 z-60 flex justify-center bg-overlay px-4 pt-palette-offset backdrop-blur-sm"
     >
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label="Search writing"
-        className="flex max-h-palette w-full max-w-155 flex-col overflow-hidden rounded-palette bg-surface p-4 pb-5 shadow-palette sm:p-6"
+        className="flex max-h-palette w-full max-w-155 flex-col overflow-hidden rounded-palette bg-surface p-4 pb-5 shadow-palette outline-none sm:p-6"
       >
         <div className="flex items-baseline gap-3">
           <input
@@ -129,8 +136,8 @@ export function CommandPalette({ posts }: { posts: Post[] }) {
               href={`/${post.slug}`}
               onClick={close}
               onMouseEnter={() => setCursor(index)}
-              className="grid grid-cols-1 gap-x-5 gap-y-0.5 text-left sm:grid-cols-result sm:items-baseline sm:gap-y-0"
-              style={{ opacity: index === cursor ? 1 : 0.42 }}
+              tabIndex={-1}
+              className={`grid grid-cols-1 gap-x-5 gap-y-0.5 rounded-md p-2 text-left sm:grid-cols-result sm:items-baseline sm:gap-y-0 ${index === cursor ? "bg-ink/5" : ""}`}
             >
               <div className="text-xs text-faint sm:text-right">
                 {formatPostDate(post.date)}

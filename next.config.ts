@@ -123,12 +123,6 @@ const nextConfig: NextConfig = {
       },
       {
         source:
-          "/articles/the-future-of-frontend-development-in-2025-trends-ai-and-the-evolving-role-of-engineers",
-        destination: "/future-of-frontend-development-2025",
-        permanent: true,
-      },
-      {
-        source:
           "/articles/how-to-effectively-setup-nextjs-with-a-component-library-using-monorepos",
         destination: "/nextjs-component-library-monorepo",
         permanent: true,
@@ -172,9 +166,19 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: true,
       },
-      // NOT redirected: /articles/nextjs-seo-checklist-for-frontend-developers
-      // — the old page itself 500s (noindex + broken render), so there was
-      // nothing to import. Needs a fresh write, then a redirect to match.
+      {
+        source:
+          "/articles/the-future-of-frontend-development-in-2025-trends-ai-and-the-evolving-role-of-engineers",
+        destination: "/",
+        permanent: true,
+      },
+      // Dropped: the old page 500s (noindex + broken render already), and
+      // was never imported — nothing to redirect to.
+      {
+        source: "/articles/nextjs-seo-checklist-for-frontend-developers",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
 };
