@@ -44,7 +44,7 @@ export function Toc({
   return (
     <nav
       aria-label={ariaLabel}
-      className={`flex flex-col gap-3.5 pr-10 ${sticky ? "sticky top-10 self-start" : ""}`}
+      className={`hidden flex-col gap-3.5 md:flex md:pr-10 ${sticky ? "md:sticky md:top-10 md:self-start" : ""}`}
     >
       <div className="mb-1 text-faint text-xs">{heading}</div>
       <ul className="flex flex-col gap-3.5">

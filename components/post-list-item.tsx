@@ -14,9 +14,9 @@ export function PostListItem({
       <Link
         href={`/${post.slug}`}
         transitionTypes={["nav-forward"]}
-        className="grid grid-cols-meta items-baseline gap-x-12 opacity-42 transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100"
+        className="grid grid-cols-1 gap-x-12 gap-y-1 opacity-42 transition-opacity duration-140 ease-out hover:opacity-100 focus-visible:opacity-100 sm:grid-cols-meta sm:items-baseline sm:gap-y-0"
       >
-        <time dateTime={post.date} className="text-right text-sm text-muted">
+        <time dateTime={post.date} className="text-sm text-muted sm:text-right">
           {formatPostDate(post.date)}
         </time>
         <div className="flex flex-col gap-1">

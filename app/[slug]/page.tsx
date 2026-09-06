@@ -6,7 +6,6 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { DirectionalTransition } from "@/components/directional-transition";
-import { Logo } from "@/components/logo";
 import { mdxComponents } from "@/components/mdx-components";
 import { MetaRow } from "@/components/meta-row";
 import { PageShell } from "@/components/page-shell";
@@ -50,15 +49,12 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
     <DirectionalTransition vtKey={slug}>
       <PageShell
         sidebar={
-          <div className="flex h-full flex-col gap-23.5">
-            <Logo />
-            <Toc
-              heading="On this page"
-              ariaLabel="On this page"
-              items={content.toc}
-              sticky
-            />
-          </div>
+          <Toc
+            heading="On this page"
+            ariaLabel="On this page"
+            items={content.toc}
+            sticky
+          />
         }
       >
         <div className="mx-auto max-w-content">
@@ -125,9 +121,9 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
             {content.related && (
               <aside
                 aria-label="Related article"
-                className="my-6.5 grid grid-cols-meta items-baseline gap-x-12 text-muted text-sm"
+                className="my-6.5 grid grid-cols-1 gap-x-12 gap-y-1 text-muted text-sm sm:grid-cols-meta sm:items-baseline sm:gap-y-0"
               >
-                <div className="text-right text-faint">Related</div>
+                <div className="text-faint sm:text-right">Related</div>
                 <Link
                   href={content.related.href}
                   className="hover:text-ink focus-visible:text-ink"
