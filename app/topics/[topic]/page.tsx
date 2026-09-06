@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { DirectionalTransition } from "@/components/directional-transition";
 import { MetaRow } from "@/components/meta-row";
 import { PageShell } from "@/components/page-shell";
 import { PostListItem } from "@/components/post-list-item";
+import { TopicFilterNav } from "@/components/topic-filter-nav";
 import { getPostsByTopic } from "@/lib/posts";
 import { getTopicBySlug, topics } from "@/lib/topics";
 
@@ -36,27 +36,7 @@ export default async function TopicPage(props: PageProps<"/topics/[topic]">) {
   return (
     <DirectionalTransition>
       <PageShell
-        sidebar={
-          <nav
-            aria-label="Topics"
-            className="hidden flex-col gap-3.5 md:flex md:pr-10"
-          >
-            <div className="mb-1 text-faint text-xs">Topics</div>
-            <ul className="flex flex-col gap-3.5">
-              {topics.map((t) => (
-                <li key={t.slug}>
-                  <Link
-                    href={`/topics/${t.slug}`}
-                    aria-current={t.slug === topic.slug ? "page" : undefined}
-                    className={`text-sm transition-colors duration-140 ease-out hover:text-ink focus-visible:text-ink ${t.slug === topic.slug ? "text-ink" : "text-muted"}`}
-                  >
-                    {t.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        }
+        sidebar={<TopicFilterNav topics={topics} activeSlug={topic.slug} />}
       >
         <div className="mx-auto max-w-content">
           <Breadcrumb

@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { DirectionalTransition } from "@/components/directional-transition";
 import { JsonLd } from "@/components/json-ld";
-import { mdxComponents } from "@/components/mdx-components";
+import { getMdxComponents } from "@/components/mdx-components";
 import { MetaRow } from "@/components/meta-row";
 import { PageShell } from "@/components/page-shell";
 import { Toc } from "@/components/toc";
@@ -130,7 +130,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
           <div className="mt-15 flex flex-col gap-6.5 text-md text-ink leading-relaxed">
             <MDXRemote
               source={content.rawBody}
-              components={mdxComponents}
+              components={getMdxComponents(slug)}
               options={{ mdxOptions }}
             />
 

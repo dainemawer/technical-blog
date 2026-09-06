@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { MetaRow } from "@/components/meta-row";
 import { PageShell } from "@/components/page-shell";
+import { TrackedLink } from "@/components/tracked-link";
 import { about } from "@/lib/about";
 import { site } from "@/lib/site";
 
@@ -57,15 +58,16 @@ export default function AboutPage() {
         <h1 className="mt-4.5 text-2xl text-ink tracking-tight">{site.name}</h1>
         <div className="mt-2 text-md text-muted text-pretty">
           {site.role} at{" "}
-          <a
+          <TrackedLink
             href={site.company.url}
+            event="outbound_link_clicked"
             target="_blank"
             rel="noreferrer"
             className="text-ink hover:opacity-60 focus-visible:opacity-60"
           >
             {site.company.name}
             <span className="sr-only"> (opens in a new tab)</span>
-          </a>
+          </TrackedLink>
           . {site.location}.
         </div>
 
@@ -127,12 +129,24 @@ export default function AboutPage() {
               {about.verify.map((link, index) => (
                 <li key={link.href} className="flex items-baseline gap-x-2">
                   {index > 0 && <span className="text-divider">|</span>}
-                  <a
-                    href={link.href}
-                    className="hover:text-ink focus-visible:text-ink"
-                  >
-                    {link.label}
-                  </a>
+                  {link.href.startsWith("mailto:") ? (
+                    <a
+                      href={link.href}
+                      className="hover:text-ink focus-visible:text-ink"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <TrackedLink
+                      href={link.href}
+                      event="outbound_link_clicked"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:text-ink focus-visible:text-ink"
+                    >
+                      {link.label}
+                    </TrackedLink>
+                  )}
                 </li>
               ))}
             </ul>

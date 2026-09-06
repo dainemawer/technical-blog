@@ -1,5 +1,6 @@
 "use client";
 
+import { trackEvent } from "@/lib/analytics";
 import { useSetCommandPaletteOpen } from "./command-palette-context";
 
 export function SearchTrigger() {
@@ -8,7 +9,10 @@ export function SearchTrigger() {
   return (
     <button
       type="button"
-      onClick={() => setOpen(true)}
+      onClick={() => {
+        trackEvent("command_palette_opened", { source: "click" });
+        setOpen(true);
+      }}
       className="flex cursor-pointer items-baseline gap-1.5 text-muted hover:text-ink focus-visible:text-ink"
     >
       <span>Search</span>

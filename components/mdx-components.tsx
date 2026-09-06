@@ -9,15 +9,19 @@ type CodeElement = ReactElement<{ className?: string; children: string }>;
 // code block's <code> in a <pre>, so this is the one place that sees the
 // whole block (language class + raw text) and can hand off to the site's
 // existing shiki highlighter — reused as-is, unlike the old template which
-// only ever rendered one hardcoded code block per post.
-async function Pre({ children }: { children: CodeElement }) {
-  const lang = children.props.className?.replace("language-", "") ?? "text";
-  // An empty fenced block (```\n```) compiles to `children.props.children`
-  // being undefined rather than "" — shiki throws on that, not just renders
-  // blank, so it needs its own guard rather than falling through.
-  const code = children.props.children ?? "";
-  const html = await highlightCode(code, lang);
-  return <CodeBlock code={code} html={html} />;
+// only ever rendered one hardcoded code block per post. Takes the post's
+// slug via closure (from getMdxComponents below) so CodeBlock can tag its
+// copy-tracking event with which post it happened on.
+function createPre(postSlug: string) {
+  return async function Pre({ children }: { children: CodeElement }) {
+    const lang = children.props.className?.replace("language-", "") ?? "text";
+    // An empty fenced block (```\n```) compiles to `children.props.children`
+    // being undefined rather than "" — shiki throws on that, not just
+    // renders blank, so it needs its own guard rather than falling through.
+    const code = children.props.children ?? "";
+    const html = await highlightCode(code, lang);
+    return <CodeBlock code={code} html={html} postSlug={postSlug} />;
+  };
 }
 
 // Inline `<code>` (not a fenced block, which is handled by Pre above).
@@ -125,18 +129,20 @@ function TableHeaderCell({ children }: { children: ReactNode }) {
   );
 }
 
-export const mdxComponents = {
-  pre: Pre,
-  code: InlineCode,
-  h2: Heading2,
-  h3: Heading3,
-  p: Paragraph,
-  a: Anchor,
-  ul: UnorderedList,
-  ol: OrderedList,
-  li: ListItem,
-  blockquote: Blockquote,
-  table: Table,
-  td: TableCell,
-  th: TableHeaderCell,
-};
+export function getMdxComponents(postSlug: string) {
+  return {
+    pre: createPre(postSlug),
+    code: InlineCode,
+    h2: Heading2,
+    h3: Heading3,
+    p: Paragraph,
+    a: Anchor,
+    ul: UnorderedList,
+    ol: OrderedList,
+    li: ListItem,
+    blockquote: Blockquote,
+    table: Table,
+    td: TableCell,
+    th: TableHeaderCell,
+  };
+}
