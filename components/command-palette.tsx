@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import { formatPostDate } from "@/lib/format";
 import type { Post } from "@/lib/posts";
 import {
@@ -26,6 +27,20 @@ export function CommandPalette({ posts }: { posts: Post[] }) {
       `${post.title} ${post.dek}`.toLowerCase().includes(q),
     );
   }, [posts, query]);
+
+  // Debounced so a search event fires once the user stops typing, not on
+  // every keystroke.
+  useEffect(() => {
+    const searchTerm = query.trim();
+    if (!searchTerm) return;
+    const timeout = setTimeout(() => {
+      trackEvent("site_search", {
+        search_term: searchTerm,
+        result_count: results.length,
+      });
+    }, 400);
+    return () => clearTimeout(timeout);
+  }, [query, results.length]);
 
   // Restore focus to whatever opened the palette (the ⌘K shortcut or the
   // SearchTrigger button) once it closes. Focus must land inside the dialog

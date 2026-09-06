@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, type ReactNode, use, useEffect, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 // Split into two contexts so components that only dispatch (e.g.
 // SearchTrigger, which never reads whether the palette is open) don't
@@ -18,6 +19,7 @@ export function CommandPaletteProvider({ children }: { children: ReactNode }) {
     function onKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
+        if (!open) trackEvent("command_palette_opened", { source: "shortcut" });
         setOpen((value) => !value);
       } else if (event.key === "Escape") {
         setOpen(false);
@@ -26,7 +28,7 @@ export function CommandPaletteProvider({ children }: { children: ReactNode }) {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [open]);
 
   return (
     <CommandPaletteDispatchContext value={setOpen}>

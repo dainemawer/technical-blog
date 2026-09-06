@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import {
   useSetSubscribeModalOpen,
   useSubscribeModalOpen,
@@ -39,11 +40,14 @@ export function SubscribeModal() {
     event.preventDefault();
     if (!EMAIL_PATTERN.test(email)) {
       setStatus("error");
+      trackEvent("newsletter_signup_failed", { reason: "invalid_email" });
       return;
     }
+    trackEvent("newsletter_signup_submitted");
     // TODO: wire this up to a real newsletter provider (e.g. Buttondown,
     // ConvertKit) once one is chosen — this only simulates success.
     setStatus("success");
+    trackEvent("newsletter_signup_succeeded");
   }
 
   return (

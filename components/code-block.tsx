@@ -1,14 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
-export function CodeBlock({ code, html }: { code: string; html?: string }) {
+export function CodeBlock({
+  code,
+  html,
+  postSlug,
+}: {
+  code: string;
+  html?: string;
+  postSlug?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
+      trackEvent("code_block_copied", { post_slug: postSlug });
       setTimeout(() => setCopied(false), 1600);
     } catch {
       // Clipboard access can be denied by the browser or permissions

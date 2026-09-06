@@ -1,5 +1,6 @@
 "use client";
 
+import { trackEvent } from "@/lib/analytics";
 import { SearchTrigger } from "./search-trigger";
 import { useSetSubscribeModalOpen } from "./subscribe-modal-context";
 
@@ -12,13 +13,20 @@ export function UtilityBar() {
       <span className="text-divider">|</span>
       <button
         type="button"
-        onClick={() => setSubscribeOpen(true)}
+        onClick={() => {
+          trackEvent("newsletter_modal_opened", { location: "nav" });
+          setSubscribeOpen(true);
+        }}
         className="cursor-pointer hover:text-ink focus-visible:text-ink"
       >
         Subscribe
       </button>
       <span className="text-divider">|</span>
-      <a href="/rss.xml" className="hover:text-ink focus-visible:text-ink">
+      <a
+        href="/rss.xml"
+        onClick={() => trackEvent("feed_link_clicked", { feed_type: "rss" })}
+        className="hover:text-ink focus-visible:text-ink"
+      >
         RSS
       </a>
     </div>
