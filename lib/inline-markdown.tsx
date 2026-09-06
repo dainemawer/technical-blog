@@ -57,6 +57,7 @@ export function renderInlineText(text: string): ReactNode[] {
           className="text-ink underline decoration-divider underline-offset-2 hover:decoration-ink focus-visible:decoration-ink"
         >
           {label}
+          <span className="sr-only"> (opens in a new tab)</span>
         </a>,
       );
     }
@@ -68,4 +69,15 @@ export function renderInlineText(text: string): ReactNode[] {
   }
 
   return nodes;
+}
+
+/**
+ * Strips the same inline subset down to plain text — for contexts like
+ * JSON-LD where markup isn't meaningful, only the words are.
+ */
+export function toPlainText(text: string): string {
+  return text.replace(
+    INLINE_PATTERN,
+    (_full, label, _href, code) => code ?? label,
+  );
 }

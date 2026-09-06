@@ -4,9 +4,11 @@ import { Analytics } from "@/components/analytics";
 import { CommandPaletteProvider } from "@/components/command-palette-context";
 import { CommandPaletteMount } from "@/components/command-palette-mount";
 import { InertWhenModalOpen } from "@/components/inert-when-modal-open";
+import { JsonLd } from "@/components/json-ld";
 import { SubscribeModalProvider } from "@/components/subscribe-modal-context";
 import { SubscribeModalMount } from "@/components/subscribe-modal-mount";
 import { getAllPosts } from "@/lib/posts";
+import { organizationSchema, personSchema, websiteSchema } from "@/lib/schema";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -25,8 +27,10 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: site.name, template: `%s — ${site.name}` },
-  description: `${site.role} at ${site.company.name}. ${site.location}.`,
+  description:
+    "Frontend engineering, web performance, JavaScript, CSS, and engineering management, written by Daine Mawer.",
   alternates: {
+    canonical: "/",
     types: { "application/rss+xml": `${site.url}/rss.xml` },
   },
 };
@@ -42,16 +46,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${figtree.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
+        <JsonLd
+          schema={[personSchema(), organizationSchema(), websiteSchema()]}
+        />
         <Analytics />
-        <a
-          href="#content"
-          className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:left-4 focus-visible:z-70 focus-visible:rounded-md focus-visible:bg-surface focus-visible:px-4 focus-visible:py-2 focus-visible:text-ink focus-visible:text-sm focus-visible:shadow-palette"
-        >
-          Skip to content
-        </a>
         <CommandPaletteProvider>
           <SubscribeModalProvider>
-            <InertWhenModalOpen>{children}</InertWhenModalOpen>
+            <InertWhenModalOpen>
+              <a
+                href="#content"
+                className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:left-4 focus-visible:z-70 focus-visible:rounded-md focus-visible:bg-surface focus-visible:px-4 focus-visible:py-2 focus-visible:text-ink focus-visible:text-sm focus-visible:shadow-palette"
+              >
+                Skip to content
+              </a>
+              {children}
+            </InertWhenModalOpen>
             <CommandPaletteMount posts={getAllPosts()} />
             <SubscribeModalMount />
           </SubscribeModalProvider>

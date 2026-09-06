@@ -8,7 +8,9 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: `${site.role} at ${site.company.name}. ${site.location}.`,
+  description:
+    "Work history, speaking, and how to verify who's actually writing this.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
@@ -30,7 +32,7 @@ export default function AboutPage() {
             <li>
               <Link
                 href="/uses"
-                className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
+                className="text-muted text-sm transition-colors duration-140 ease-out hover:text-ink focus-visible:text-ink"
               >
                 Uses
               </Link>
@@ -38,7 +40,7 @@ export default function AboutPage() {
             <li>
               <Link
                 href="/now"
-                className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
+                className="text-muted text-sm transition-colors duration-140 ease-out hover:text-ink focus-visible:text-ink"
               >
                 Now
               </Link>
@@ -62,6 +64,7 @@ export default function AboutPage() {
             className="text-ink hover:opacity-60 focus-visible:opacity-60"
           >
             {site.company.name}
+            <span className="sr-only"> (opens in a new tab)</span>
           </a>
           . {site.location}.
         </div>

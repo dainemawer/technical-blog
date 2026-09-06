@@ -6,6 +6,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { DirectionalTransition } from "@/components/directional-transition";
+import { JsonLd } from "@/components/json-ld";
 import { mdxComponents } from "@/components/mdx-components";
 import { MetaRow } from "@/components/meta-row";
 import { PageShell } from "@/components/page-shell";
@@ -14,6 +15,8 @@ import { formatArticleDate } from "@/lib/format";
 import { renderInlineText } from "@/lib/inline-markdown";
 import { getPostContent } from "@/lib/mdx";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
+import { articleSchema, faqPageSchema } from "@/lib/schema";
+import { site } from "@/lib/site";
 import { getTopicBySlug } from "@/lib/topics";
 
 const mdxOptions = {
@@ -31,7 +34,14 @@ export async function generateMetadata(
   const { slug } = await props.params;
   const post = getPostBySlug(slug);
   if (!post) return {};
-  return { title: post.title, description: post.dek };
+  return {
+    // absolute: bypasses the "%s — Daine Mawer" template. Most titles are
+    // already close to the SERP truncation point on their own; appending
+    // the site name would push several of them past it.
+    title: { absolute: post.title },
+    description: post.dek,
+    alternates: { canonical: `/${slug}` },
+  };
 }
 
 export default async function ArticlePage(props: PageProps<"/[slug]">) {
@@ -47,6 +57,13 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
 
   return (
     <DirectionalTransition vtKey={slug}>
+      <JsonLd
+        schema={
+          content.faq.length > 0
+            ? [articleSchema(post, content), faqPageSchema(content.faq)]
+            : articleSchema(post, content)
+        }
+      />
       <PageShell
         sidebar={
           <Toc
@@ -61,7 +78,6 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
           <Breadcrumb
             items={[
               { label: "Home", href: "/" },
-              { label: "Writing", href: "/" },
               ...(topic
                 ? [{ label: topic.name, href: `/topics/${topic.slug}` }]
                 : []),
@@ -78,7 +94,7 @@ export default async function ArticlePage(props: PageProps<"/[slug]">) {
               href="/about"
               className="text-ink transition-opacity duration-140 ease-out hover:opacity-60 focus-visible:opacity-60"
             >
-              {"Daine Mawer"}
+              {site.name}
             </Link>
             <span className="text-divider">|</span>
             <time dateTime={post.date}>
