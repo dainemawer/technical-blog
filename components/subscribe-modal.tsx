@@ -56,13 +56,13 @@ export function SubscribeModal() {
       onClick={(event) => {
         if (event.target === event.currentTarget) close();
       }}
-      className="fixed inset-0 z-60 flex items-center justify-center bg-overlay backdrop-blur-sm"
+      className="fixed inset-0 z-60 flex items-center justify-center bg-overlay px-4 backdrop-blur-sm"
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="w-100 rounded-palette bg-surface p-7 shadow-palette"
+        className="w-full max-w-100 rounded-palette bg-surface p-5 shadow-palette sm:p-7"
       >
         <div className="flex items-baseline justify-between gap-3">
           <h2 id={titleId} className="text-ink text-lg tracking-tight">

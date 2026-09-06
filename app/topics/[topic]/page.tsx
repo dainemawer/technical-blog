@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { DirectionalTransition } from "@/components/directional-transition";
-import { Logo } from "@/components/logo";
 import { MetaRow } from "@/components/meta-row";
 import { PageShell } from "@/components/page-shell";
 import { PostListItem } from "@/components/post-list-item";
@@ -34,25 +33,25 @@ export default async function TopicPage(props: PageProps<"/topics/[topic]">) {
     <DirectionalTransition>
       <PageShell
         sidebar={
-          <div className="flex flex-col gap-23.5">
-            <Logo />
-            <nav aria-label="Topics" className="flex flex-col gap-3.5 pr-10">
-              <div className="mb-1 text-faint text-xs">Topics</div>
-              <ul className="flex flex-col gap-3.5">
-                {topics.map((t) => (
-                  <li key={t.slug}>
-                    <Link
-                      href={`/topics/${t.slug}`}
-                      aria-current={t.slug === topic.slug ? "page" : undefined}
-                      className={`text-ink text-sm hover:opacity-100 focus-visible:opacity-100 ${t.slug === topic.slug ? "opacity-100" : "opacity-32"}`}
-                    >
-                      {t.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
+          <nav
+            aria-label="Topics"
+            className="hidden flex-col gap-3.5 md:flex md:pr-10"
+          >
+            <div className="mb-1 text-faint text-xs">Topics</div>
+            <ul className="flex flex-col gap-3.5">
+              {topics.map((t) => (
+                <li key={t.slug}>
+                  <Link
+                    href={`/topics/${t.slug}`}
+                    aria-current={t.slug === topic.slug ? "page" : undefined}
+                    className={`text-ink text-sm hover:opacity-100 focus-visible:opacity-100 ${t.slug === topic.slug ? "opacity-100" : "opacity-32"}`}
+                  >
+                    {t.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         }
       >
         <div className="mx-auto max-w-content">

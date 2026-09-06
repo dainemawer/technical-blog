@@ -4,11 +4,13 @@ import { MetaRow } from "./meta-row";
 export function FooterElsewhere() {
   return (
     <footer className="mt-22 border-divider border-t pt-6.5">
-      <MetaRow label="Elsewhere">
+      <MetaRow
+        label={<span className="sr-only sm:not-sr-only">Elsewhere</span>}
+      >
         <div className="flex flex-col gap-5.5">
           <nav
             aria-label="Elsewhere"
-            className="grid grid-cols-4 gap-x-8 text-sm text-muted"
+            className="grid grid-cols-2 gap-x-6 gap-y-5 text-sm text-muted sm:grid-cols-4 sm:gap-x-8 sm:gap-y-0"
           >
             {footerNav.map((group) => (
               <div key={group.heading} className="flex flex-col gap-2.5">

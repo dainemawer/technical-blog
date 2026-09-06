@@ -1,6 +1,5 @@
 import { ViewTransition } from "react";
 import { DirectionalTransition } from "@/components/directional-transition";
-import { Logo } from "@/components/logo";
 import { PageShell } from "@/components/page-shell";
 import { PostListItem } from "@/components/post-list-item";
 import { YearFilter } from "@/components/year-filter";
@@ -18,12 +17,8 @@ export default async function HomePage(props: PageProps<"/">) {
   return (
     <DirectionalTransition>
       <PageShell
-        sidebar={
-          <div className="flex flex-col gap-14">
-            <Logo />
-            <YearFilter selected={selectedYear} />
-          </div>
-        }
+        sidebar={<YearFilter selected={selectedYear} />}
+        sidebarGap="md:gap-14"
       >
         <h1 className="sr-only">Writing</h1>
         <ul className="flex flex-col gap-8.5">

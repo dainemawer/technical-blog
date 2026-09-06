@@ -64,13 +64,13 @@ export function CommandPalette({ posts }: { posts: Post[] }) {
       onClick={(event) => {
         if (event.target === event.currentTarget) close();
       }}
-      className="fixed inset-0 z-60 flex justify-center bg-overlay pt-palette-offset backdrop-blur-sm"
+      className="fixed inset-0 z-60 flex justify-center bg-overlay px-4 pt-palette-offset backdrop-blur-sm"
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Search writing"
-        className="flex max-h-palette w-155 flex-col overflow-hidden rounded-palette bg-surface p-6 pb-5 shadow-palette"
+        className="flex max-h-palette w-full max-w-155 flex-col overflow-hidden rounded-palette bg-surface p-4 pb-5 shadow-palette sm:p-6"
       >
         <div className="flex items-baseline gap-3">
           <input
@@ -129,10 +129,10 @@ export function CommandPalette({ posts }: { posts: Post[] }) {
               href={`/${post.slug}`}
               onClick={close}
               onMouseEnter={() => setCursor(index)}
-              className="grid grid-cols-result items-baseline gap-x-5 text-left"
+              className="grid grid-cols-1 gap-x-5 gap-y-0.5 text-left sm:grid-cols-result sm:items-baseline sm:gap-y-0"
               style={{ opacity: index === cursor ? 1 : 0.42 }}
             >
-              <div className="text-right text-xs text-faint">
+              <div className="text-xs text-faint sm:text-right">
                 {formatPostDate(post.date)}
               </div>
               <div className="flex flex-col gap-0.5">

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/breadcrumb";
-import { Logo } from "@/components/logo";
 import { MetaRow } from "@/components/meta-row";
 import { PageShell } from "@/components/page-shell";
 import { about } from "@/lib/about";
@@ -16,41 +15,36 @@ export default function AboutPage() {
   return (
     <PageShell
       sidebar={
-        <div className="flex flex-col gap-23.5">
-          <Logo />
-          <nav aria-label="Sections" className="flex flex-col gap-3.5 pr-10">
-            <div className="mb-1 text-faint text-xs">
-              Elsewhere on this page
-            </div>
-            <ul className="flex flex-col gap-3.5">
-              <li>
-                <Link
-                  href="/about"
-                  aria-current="page"
-                  className="text-ink text-sm"
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/uses"
-                  className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
-                >
-                  Uses
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/now"
-                  className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
-                >
-                  Now
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
+        <nav aria-label="Sections" className="flex flex-col gap-3.5 md:pr-10">
+          <div className="mb-1 text-faint text-xs">Elsewhere on this page</div>
+          <ul className="flex flex-row flex-wrap gap-x-4 gap-y-2 md:flex-col md:gap-3.5">
+            <li>
+              <Link
+                href="/about"
+                aria-current="page"
+                className="text-ink text-sm"
+              >
+                About
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/uses"
+                className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
+              >
+                Uses
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/now"
+                className="text-ink text-sm opacity-32 hover:opacity-100 focus-visible:opacity-100"
+              >
+                Now
+              </Link>
+            </li>
+          </ul>
+        </nav>
       }
     >
       <div className="mx-auto max-w-content">
@@ -86,7 +80,7 @@ export default function AboutPage() {
               {about.work.map((item) => (
                 <li
                   key={item.period}
-                  className="grid grid-cols-subrow items-baseline gap-x-8"
+                  className="grid grid-cols-1 gap-x-8 gap-y-0.5 sm:grid-cols-subrow sm:items-baseline sm:gap-y-0"
                 >
                   <div className="text-sm text-muted">{item.period}</div>
                   <div>{item.description}</div>
@@ -100,7 +94,7 @@ export default function AboutPage() {
               {about.speaking.map((item) => (
                 <li
                   key={item.venue}
-                  className="grid grid-cols-subrow items-baseline gap-x-8"
+                  className="grid grid-cols-1 gap-x-8 gap-y-0.5 sm:grid-cols-subrow sm:items-baseline sm:gap-y-0"
                 >
                   <div className="text-sm text-muted">{item.venue}</div>
                   <div>{item.topic}</div>
